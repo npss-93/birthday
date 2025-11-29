@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Happy Birthday!</title>
+    <link rel="icon" type="image/x-icon"
+        href="https://icons.iconarchive.com/icons/google/noto-emoji-activities/256/52707-party-popper-icon.png">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&family=Sacramento&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Ribeye&display=swap" rel="stylesheet">
+
+
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+            background-color: #fce7f3;
+            overflow-x: hidden;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .title-font {
+            font-family: 'Sacramento', cursive;
+        }
+
+        .font-family-Ribeye {
+            font-family: 'Ribeye', cursive;
+        }
+
+
+        /* --- Transitions --- */
+        .page {
+            display: none;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            height: 100vh;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .page.active {
+            display: flex;
+            opacity: 1;
+            z-index: 10;
+        }
+
+
+        /* --- Numpad Heart Styles --- */
+        .heart-btn {
+            position: relative;
+            background-color: #f472b6;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 65px;
+            height: 65px;
+            cursor: pointer;
+            user-select: none;
+            touch-action: manipulation;
+            aspect-ratio: 1 / 1;
+
+            /* รูปหัวใจเต็มพื้นที่ */
+            clip-path: path("M32.5 58C14 44 3 33 3 20.5 3 11 10 4 19.2 4c5.8 0 11 3 13.3 7.6C34.8 7 40 4 45.7 4 55 4 62 11 62 20.5 62 33 51 44 32.5 58z");
+
+            /* --- SHADOW --- */
+            /* เงานอกแบบนุ่ม */
+            box-shadow:
+                0 6px 0 #db2777,
+                /* เงาหลัก (ด้านล่าง) */
+                0 10px 15px rgba(0, 0, 0, 0.25);
+            /* เงากระจายเพิ่มมิติ */
+
+            /* transition เด้ง */
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        /* Inner highlight เพื่อให้หัวใจดูนูน */
+        .heart-btn::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            clip-path: inherit;
+            /* ให้ inner light ตามรูปหัวใจ */
+            background: radial-gradient(circle at 30% 30%,
+                    rgba(255, 255, 255, 0.45),
+                    rgba(255, 255, 255, 0) 60%);
+            pointer-events: none;
+        }
+
+        /* กด = หัวใจยุบลงแบบ 3D */
+        .heart-btn:active,
+        .heart-btn.active-state {
+            transform: translateY(3px);
+            box-shadow:
+                0 3px 0 #db2777,
+                0 6px 10px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Wide 0 button */
+        .heart-btn.span-2 {
+            clip-path: none;
+            /* ปุ่ม 0 ใช้ทรงปกติ */
+            border-radius: 32px;
+            width: unset;
+            height: unset;
+            padding: 0.5rem 0;
+        }
+
+
+        .numpad-grid {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5pz;
+            max-width: 250px;
+            margin: 0 auto;
+        }
+
+        /* --- Cake CSS --- */
+        :root {
+            --vanilla: #f0e4d0;
+            --chocolate: #553c13;
+        }
+
+        .food-coloring-chocolate {
+            background-color: var(--chocolate);
+            box-shadow:
+                0 2px 0px #604216,
+                0 4px 0px #4d3611,
+                0 6px 0px #4b3511,
+                0 8px 0px #493410,
+                0 10px 0px #473310,
+                0 12px 0px #45320f,
+                0 14px 0px #43310f,
+                0 16px 0px #41300e,
+                0 18px 0px #3f2f0e,
+                0 20px 0px #3d2e0d,
+                0 22px 0px #3b2d0d,
+                0 24px 0px #392c0c,
+                0 26px 0px #372b0c,
+                0 28px 0px #352a0b,
+                0 30px 0px #33290b;
+        }
+
+        /* Cake Container - Adjusted to rely on parent flexbox for centering */
+        .cake-container {
+            position: relative;
+            width: 270px;
+            /* Width for the container */
+            height: 250px;
+            /* Height for the container */
+            cursor: pointer;
+        }
+
+        .cake-container .cake {
+            /* Target the inner .cake div */
+            position: absolute;
+            /* Relative to cake-container */
+            width: 250px;
+            height: 200px;
+            top: 80%;
+            /* Start from center */
+            left: 50%;
+            /* Start from center */
+            /* Use translate to perfectly center the cake, then apply 3D transforms */
+            transform-style: preserve-3d;
+            transform: translate(-50%, -50%) rotateX(20deg) scale(0.9);
+            /* Combined centering and 3D transform */
+        }
+
+        .plate {
+            width: 270px;
+            height: 110px;
+            position: absolute;
+            bottom: -10px;
+            left: -10px;
+            background-color: #ccc;
+            border-radius: 50%;
+            box-shadow: 0 2px 0 darken(#ccc, 10%), 0 4px 0 darken(#ccc, 10%),
+                0 5px 40px rgba(black, 0.5);
+            /* Adjust for 3D perspective */
+            transform: translateZ(-20px) rotateX(-20deg);
+            z-index: 0;
+        }
+
+        .cake>* {
+            position: absolute;
+        }
+
+        .layer {
+            position: absolute;
+            display: block;
+            width: 250px;
+            height: 100px;
+            border-radius: 50%;
+        }
+
+        .layer-top {
+            top: 0px;
+            transform: translateZ(60px);
+        }
+
+        .layer-middle {
+            top: 33px;
+            transform: translateZ(30px);
+        }
+
+        .layer-bottom {
+            top: 66px;
+            transform: translateZ(0px);
+        }
+
+        .icing {
+            top: 2px;
+            left: 5px;
+            background-color: var(--vanilla);
+            width: 240px;
+            height: 90px;
+            border-radius: 50%;
+            /* Adjust for 3D perspective to sit on top layer */
+            transform: translateZ(65px);
+            z-index: 2;
+        }
+
+        .icing::before {
+            content: "";
+            position: absolute;
+            top: 4px;
+            right: 5px;
+            bottom: 6px;
+            left: 5px;
+            background-color: #f3e9d7;
+            box-shadow: 0 0 4px #f6efe1, 0 0 4px #f6efe1, 0 0 4px #f6efe1;
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .drip {
+            display: block;
+            width: 50px;
+            height: 60px;
+            border-bottom-left-radius: 25px;
+            border-bottom-right-radius: 25px;
+            background-color: var(--vanilla);
+            /* Adjust for 3D perspective */
+            transform: translateZ(60px);
+            z-index: 3;
+        }
+
+        .drip1 {
+            top: 53px;
+            left: 5px;
+            transform: skewY(15deg) translateZ(60px);
+            height: 48px;
+            width: 40px;
+        }
+
+        .drip2 {
+            top: 69px;
+            left: 181px;
+            transform: skewY(-15deg) translateZ(60px);
+        }
+
+        .drip3 {
+            top: 54px;
+            left: 90px;
+            width: 80px;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+            transform: translateZ(60px);
+        }
+
+        .candle {
+            /* Modified for striped pattern via JS variable or default */
+            /* Default Striped Pattern fallback: uses CSS variables --c1 and --c2 set dynamically */
+            background: repeating-linear-gradient(45deg,
+                    var(--c1, #ff9a9e),
+                    var(--c1, #ff9a9e) 5px,
+                    var(--c2, #fecfef) 5px,
+                    var(--c2, #fecfef) 10px);
+            width: 16px;
+            height: 50px;
+            border-radius: 8px / 4px;
+            top: -20px;
+            left: 50%;
+            margin-left: -8px;
+            z-index: 10;
+            position: absolute;
+            transform-origin: bottom center;
+            box-shadow: inset -2px 0 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .candle::before {
+            /* Wick color */
+            content: "";
+            position: absolute;
+            top: -2px;
+            left: 7px;
+            width: 2px;
+            height: 6px;
+            border-radius: 0;
+            background-color: #333;
+            /* Wick color */
+            filter: none;
+        }
+
+
+        .flame {
+            position: absolute;
+            background-color: orange;
+            width: 15px;
+            height: 35px;
+            border-radius: 10px 10px 10px 10px / 25px 25px 10px 10px;
+            top: -34px;
+            left: 50%;
+            margin-left: -7.5px;
+            z-index: 10;
+            box-shadow: 0 0 10px rgba(orange, 0.5), 0 0 20px rgba(orange, 0.5),
+                0 0 60px rgba(orange, 0.5), 0 0 80px rgba(orange, 0.5);
+            transform-origin: 50% 90%;
+            animation: flicker 1s ease-in-out alternate infinite;
+        }
+
+        @keyframes flicker {
+            0% {
+                transform: skewX(5deg);
+                box-shadow: 0 0 10px rgba(orange, 0.2), 0 0 20px rgba(orange, 0.2),
+                    0 0 60px rgba(orange, 0.2), 0 0 80px rgba(orange, 0.2);
+            }
+
+            25% {
+                transform: skewX(-5deg);
+                box-shadow: 0 0 10px rgba(orange, 0.5), 0 0 20px rgba(orange, 0.5),
+                    0 0 60px rgba(orange, 0.5), 0 0 80px rgba(orange, 0.5);
+            }
+
+            50% {
+                transform: skewX(10deg);
+                box-shadow: 0 0 10px rgba(orange, 0.3), 0 0 20px rgba(orange, 0.3),
+                    0 0 60px rgba(orange, 0.3), 0 0 80px rgba(orange, 0.3);
+            }
+
+            75% {
+                transform: skewX(-10deg);
+                box-shadow: 0 0 10px rgba(orange, 0.4), 0 0 20px rgba(orange, 0.4),
+                    0 0 60px rgba(orange, 0.4), 0 0 80px rgba(orange, 0.4);
+            }
+
+            100% {
+                transform: skewX(5deg);
+                box-shadow: 0 0 10px rgba(orange, 0.5), 0 0 20px rgba(orange, 0.5),
+                    0 0 60px rgba(orange, 0.5), 0 0 80px rgba(orange, 0.5);
+            }
+        }
+
+        /* --- End Cake CSS --- */
+
+        /* --- Puzzle Styles --- */
+        .puzzle-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            width: 315px;
+            height: 315px;
+            margin: 0 auto;
+            border: 5px solid #fff;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            background: #eee;
+            touch-action: none;
+        }
+
+        .puzzle-piece {
+            width: 100%;
+            height: 100px;
+            background-size: 300px 300px;
+            cursor: grab;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            /* ADDED: Transition for smooth visual return/reset */
+            transition: transform 0s ease-out, opacity 0.1s;
+        }
+
+        .puzzle-piece.dragging {
+            opacity: 0.8;
+            border: 2px solid #db2777;
+            z-index: 50;
+        }
+
+        .puzzle-piece.over {
+            border: 2px dashed #db2777;
+        }
+
+        /* --- Envelope & Card --- */
+        .envelope-wrapper {
+            position: relative;
+            cursor: pointer;
+            height: 340px;
+            width: 320px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 120px;
+            perspective: 1000px;
+        }
+
+        .envelope {
+            width: 300px;
+            height: 240px;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        /* Back of envelope */
+        .envelope-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #cf5959 0%, #c44343 100%);
+            border-radius: 3px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            z-index: 0;
+        }
+
+        /* Left side fold */
+        .envelope-left {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 0;
+            border-bottom: 240px solid #fc7777;
+            border-right: 300px solid transparent;
+            z-index: 2;
+            filter: brightness(0.75);
+        }
+
+        /* Right side fold */
+        .envelope-right {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 0;
+            height: 0;
+            border-bottom: 240px solid #d35656;
+            border-left: 300px solid transparent;
+            z-index: 3;
+            filter: brightness(0.95);
+        }
+
+        /* Bottom fold */
+        .envelope-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(to bottom, #ec7979, #e26262);
+            clip-path: polygon(0 100%, 50% 0, 100% 100%);
+            z-index: 4;
+        }
+
+        /* Top flap */
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(to bottom, rgb(206, 67, 67) 0%, #dd5555 50%, #dd6565 100%);
+            clip-path: polygon(0 0, 50% 100%, 100% 0);
+            transform-origin: 50% 0%;
+            transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+            z-index: 5;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 3px 3px 0 0;
+        }
+
+        /* Flap 3D effect */
+        .envelope-flap::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg,
+                    rgba(255, 255, 255, 0.2) 0%,
+                    transparent 50%,
+                    rgba(0, 0, 0, 0.1) 100%);
+            clip-path: polygon(0 0, 50% 100%, 100% 0);
+            z-index: 1;
+        }
+
+        /* Card inside envelope */
+        .card {
+            position: absolute;
+            width: 270px;
+            height: 220px;
+            background: linear-gradient(to bottom, #ffffff 0%, #fef3f4 100%);
+            left: 15px;
+            bottom: 20px;
+            padding: 25px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+            z-index: 2;
+            transition: transform 1s cubic-bezier(0.34, 1.56, 0.64, 1) 1.2s;
+            transform: translateY(10px);
+            border: 1px solid #fecdd3;
+        }
+
+        /* Card decorative corner */
+        .card::before {
+            content: '💌';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            opacity: 0.3;
+        }
+
+        /* Open state animations */
+        .envelope.open .envelope-flap {
+            position: absolute;
+            transform: rotateX(-180deg);
+            animation: flapZIndex 0s 0.2s forwards;
+            /* รอ 0.5s แล้วเปลี่ยน z-index */
+        }
+
+        @keyframes flapZIndex {
+            to {
+                z-index: 1;
+            }
+        }
+
+        .envelope.open .card {
+            position: absolute;
+            transform: translateY(-200px);
+            z-index: 2;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="app" class="w-full h-screen relative overflow-hidden flex items-center justify-center">
+
+        <!-- Page 1: Landing Page (New Start Page) -->
+        <div id="page-1" class="page active flex-col items-center justify-center text-center">
+            <h1 class="font-family-Ribeye text-6xl text-pink-600 mb-4 animate-pulse leading-normal">Happy Birthday!</h1>
+            <p class="text-xl text-gray-500 mb-8">คุณพร้อมที่จะไปดูของขวัญแล้วหรือยัง?</p>
+            <button id="startButton" onclick="goToPage(2)"
+                class="px-8 py-3 bg-pink-500 text-white text-lg font-semibold rounded-xl shadow-lg hover:bg-pink-600 transition duration-300 transform hover:scale-105">
+                ไปกันเล้ยยย <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+        </div>
+
+        <!-- 2. LOGIN (Was Page 1) -->
+        <div id="page-2" class="page flex-col justify-center items-center bg-pink-50 px-4">
+            <div class="bg-white p-8 rounded-2xl shadow-xl text-center max-w-sm w-full mx-4">
+                <div class="text-4xl mb-4">🔒</div>
+                <h1 class="text-2xl font-bold text-pink-600 mb-2">ยืนยันตัวตนก่อนนะ</h1>
+                <p class="text-gray-500 mb-6">กรอกวัน/เดือนเกิดของเธอ เพื่อไปต่อน๊าาา</p>
+
+                <!-- START: NUMPAD INPUT & DISPLAY -->
+                <div id="birthdate-display"
+                    class="w-full h-12 p-3 border-2 border-pink-500 bg-pink-100 rounded-lg mb-6 text-center text-3xl font-mono tracking-widest text-pink-700 flex items-center justify-center shadow-inner">
+                    DD/MM
+                </div>
+
+                <div id="numpad" class="grid numpad-grid">
+                    <!-- Row 1: 1, 2, 3 -->
+                    <div class="heart-btn" data-value="1">1</div>
+                    <div class="heart-btn" data-value="2">2</div>
+                    <div class="heart-btn" data-value="3">3</div>
+                    <!-- Row 2: 4, 5, 6 -->
+                    <div class="heart-btn" data-value="4">4</div>
+                    <div class="heart-btn" data-value="5">5</div>
+                    <div class="heart-btn" data-value="6">6</div>
+                    <!-- Row 3: 7, 8, 9 -->
+                    <div class="heart-btn" data-value="7">7</div>
+                    <div class="heart-btn" data-value="8">8</div>
+                    <div class="heart-btn" data-value="9">9</div>
+                    <!-- Row 4: CLEAR, 0, BACKSPACE -->
+                    <div class="heart-btn bg-red-400 hover:bg-red-500 shadow-red-700 text-lg" data-action="clear">
+                        <i class="fas fa-trash-alt"></i>
+                    </div>
+                    <div class="heart-btn" data-value="0">0</div>
+                    <div class="heart-btn bg-pink-400 hover:bg-pink-500 shadow-pink-700 text-lg"
+                        data-action="backspace">
+                        <i class="fas fa-backspace"></i>
+                    </div>
+                </div>
+
+                <!-- END: NUMPAD INPUT & DISPLAY -->
+                <button onclick="checkBirthday()"
+                    class="mt-6 w-full bg-pink-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-pink-600 transition duration-300 transform hover:scale-105">
+                    ยืนยัน <i class="fas fa-heart ml-2"></i>
+                </button>
+                <p id="error-msg" class="text-red-500 mt-2 hidden text-sm">วันเกิดไม่ถูกต้อง ลองใหม่อีกครั้งนะ!</p>
+            </div>
+        </div>
+
+        <!-- 3. CAKE PAGE (Was Page 2) -->
+        <div id="page-3" class="page flex-col justify-center items-center">
+            <h2 class="text-3xl font-bold text-pink-600 mb-8 title-font animate-bounce">Happy Birthday!</h2>
+            <p class="text-gray-600 mb-8">คลิกที่หน้าเค้กเพื่อปักเทียนให้ครบ 5 เล่มนะ!</p>
+
+            <div class="cake-container" onclick="placeCandle(event)">
+                <div class="cake" id="new-cake">
+                    <div class="plate"></div>
+                    <div class="layer layer-bottom food-coloring-chocolate"></div>
+                    <div class="layer layer-middle food-coloring-chocolate"></div>
+                    <div class="layer layer-top food-coloring-chocolate"></div>
+                    <div class="icing" id="cake-surface"></div> <!-- Use icing as clickable surface -->
+                    <div class="drip drip1"></div>
+                    <div class="drip drip2"></div>
+                    <div class="drip drip3"></div>
+                    <!-- Candles will be appended here dynamically -->
+                </div>
+            </div>
+
+            <div id="wish-message" class="mt-20 text-center opacity-0 transition-opacity duration-1000">
+                <p class="text-2xl text-pink-700 font-bold mb-4">✨ อธิษฐานเลย! ✨</p>
+                <!-- ปุ่มถูกซ่อนไว้ในตอนแรก และจะแสดงเมื่อปักเทียนครบตามเงื่อนไขเท่านั้น --><button
+                    id="next-to-gallery-btn" onclick="goToPage(4)"
+                    class="bg-white border-2 border-pink-500 text-pink-500 px-6 py-2 rounded-full hover:bg-pink-500 hover:text-white transition shadow-md opacity-0 pointer-events-none">
+                    อธิษฐานเสร็จแล้ว ไปต่อเลย <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 4. GALLERY (Was Page 3) -->
+        <!-- FIX: Added pb-32 to ensure bottom button is reachable on mobile -->
+        <div id="page-4" class="page flex-col justify-start items-center pt-10 pb-32 overflow-y-auto">
+            <h2 class="text-3xl text-pink-600 font-bold mb-6 title-font">Our Memories</h2>
+            <!-- Added ID for JS population -->
+            <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 px-6 pb-10 w-full max-w-2xl">
+                <!-- Gallery items will be injected here by renderGallery() -->
+            </div>
+            <button onclick="goToPage(5)"
+                class="mb-10 bg-pink-500 text-white px-8 py-3 rounded-full shadow-lg hover:bg-pink-600 animate-pulse">
+                ไปเล่นเกมกันเถอะ <i class="fas fa-gamepad ml-2"></i>
+            </button>
+        </div>
+
+        <!-- 5. PUZZLE (Was Page 4) -->
+        <div id="page-5" class="page flex-col justify-center items-center">
+            <h2 class="text-2xl text-pink-600 font-bold mb-2">เรียงรูปของเราให้ถูกต้องหน่อย</h2>
+            <p class="text-sm text-gray-500 mb-6">ลากชิ้นส่วนสลับกัน (Drag & Drop)</p>
+            <div class="puzzle-container" id="puzzle-board"></div>
+            <p id="puzzle-success" class="text-green-500 font-bold mt-4 hidden text-xl">เก่งมาก! 🎉</p>
+            <button id="next-to-card-btn" onclick="goToPage(6)"
+                class="mt-6 bg-pink-500 text-white px-6 py-2 rounded-full opacity-50 cursor-not-allowed pointer-events-none transition">
+                รับของขวัญชิ้นสุดท้าย <i class="fas fa-gift ml-2"></i>
+            </button>
+        </div>
+
+        <!-- 6. CARD PAGE (Was Page 5) -->
+        <div id="page-6" class="page flex-col justify-center items-center bg-pink-100">
+            <h2 class="text-[40px] text-pink-600 font-bold mb-[50px] title-font">For You...</h2>
+
+            <div class="envelope-wrapper" onclick="openEnvelope()">
+
+                <div class="envelope" id="envelope">
+                    <div class="envelope-back"></div>
+                    <div class="card">
+                        <h3 class="text-[16px] font-bold text-pink-600 mt-2">สุขสันต์วันเกิดนะ คนเก่ง</h3>
+                        <p class="text-gray-600 text-[12px] mt-2 leading-relaxed">
+                            วันนี้เธอโตขึ้นอีกปีแล้วนะ<br>
+                            ขอให้ทุกๆการเติบโตของเธอ<br>
+                            เต็มไปด้วยความสุข และรอยยิ้ม<br>
+                            ไม่ว่าจะเจอกับอะไร ก็ขอให้ผ่านไปได้ด้วยดี<br>
+                            ขอให้มีความสุขในทุกๆวัน<br>
+                            ขอให้ทุกสิ่งที่คิด ทุกสิ่งที่ฝัน<br>
+                            เป็นจริงอย่างที่เธอตั้งใจเอาไว้นะ<br>
+                            
+                        </p>
+                        <div class="mt-2 text-[14px]">🍰🎁🎈</div>
+                    </div>
+                    <div class="envelope-left"></div>
+                    <div class="envelope-right"></div>
+                    <div class="envelope-bottom"></div>
+                    <div class="envelope-flap"></div>
+                </div>
+            </div>
+            <p class="mt-[2px] text-gray-500 animate-pulse">แตะที่ซองจดหมายเพื่อเปิด</p>
+        </div>
+    </div>
+
+    <audio id="bg-music" loop>
+        <source src="https://cdn.pixabay.com/audio/2025/04/04/audio_2c2635b316.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Note: Birthday check is currently set to true for easy testing.
+        const TARGET_BIRTHDAY_MD = "04/12";
+        const PUZZLE_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg";
+        let currentCandles = 0;
+        const totalCandles = 5;
+        let puzzleArr = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+        let dragSrcEl = null;
+        let touchStartPiece = null;
+        let touchSrc = null;
+        let currentTouchTarget = null;
+        let birthdateInput = ""; // ตัวแปรสำหรับเก็บค่าวันเกิดจาก Numpad
+
+        const gallery = [
+            {
+                title: 'วันแรกที่เจอกัน',
+                image: 'https://images.unsplash.com/photo-1516961642265-531546e84af2?q=80&w=400&auto=format&fit=crop'
+            },
+            {
+                title: 'ทริปเชียงใหม่',
+                image: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=400&auto=format&fit=crop'
+            },
+            {
+                title: 'เดทของเรา',
+                image: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=400&auto=format&fit=crop'
+            },
+            {
+                // Placeholder if you want to add more, I've filled it with the Film Camera memory to keep 4 items
+                title: 'ภาพจากกล้องฟิล์ม',
+                image: 'https://images.unsplash.com/photo-1549414249-1d48c8f0e0c8?q=80&w=400&auto=format&fit=crop'
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            // Render the gallery when the page loads
+            renderGallery();
+            // Setup Numpad listeners
+            setupNumpad();
+            // Initial display update
+            updateBirthdateDisplay();
+        });
+
+        // --- NEW: Haptic Feedback Utility ---
+        function haptic(pattern) {
+            // Check if vibration is supported
+            if ('vibrate' in navigator) {
+                navigator.vibrate(pattern);
+            }
+        }
+
+        // --- Numpad Logic ---
+        function setupNumpad() {
+            document.querySelectorAll('.heart-btn').forEach(button => {
+                // ใช้ 'touchstart' แทน 'click' บนปุ่มเพื่อการตอบสนองที่เร็วกว่าบนมือถือ
+                button.addEventListener('touchstart', (e) => {
+                    e.preventDefault(); // ป้องกันการดีเลย์ 300ms และการซูม
+
+                    // FIX: Visual Feedback for Mobile
+                    button.classList.add('active-state');
+
+                    // NEW: Haptic on tap
+                    haptic(10);
+
+                    handleNumpadInput(button);
+                }, { passive: false });
+
+                button.addEventListener('touchend', (e) => {
+                    // FIX: Remove active state
+                    setTimeout(() => button.classList.remove('active-state'), 100);
+                });
+
+                // ใช้ 'click' เป็น fallback สำหรับ Desktop
+                button.addEventListener('click', () => {
+                    handleNumpadInput(button);
+                });
+            });
+        }
+
+        function handleNumpadInput(button) {
+            const value = button.dataset.value;
+            const action = button.dataset.action;
+            const err = document.getElementById('error-msg');
+            err.classList.add('hidden'); // ซ่อน error เมื่อมีการกดปุ่ม
+
+            if (value) {
+                // 1. รับค่าตัวเลข
+                if (birthdateInput.length < 5) { // DD/MM มี 5 ตัวอักษร
+                    // ถ้ากำลังจะใส่ตัวที่ 3 ให้เพิ่ม '/' อัตโนมัติ
+                    if (birthdateInput.length === 2) {
+                        birthdateInput += '/';
+                    }
+                    if (birthdateInput.length < 5) { // เช็คอีกรอบหลังจากเพิ่ม '/'
+                        birthdateInput += value;
+                    }
+                }
+            } else if (action === 'backspace') {
+                // 2. ลบตัวอักษร
+                if (birthdateInput.length > 0) {
+                    birthdateInput = birthdateInput.slice(0, -1);
+                }
+                // ถ้าลบแล้วตัวสุดท้ายเป็น '/' ให้ลบอีกทีเพื่อให้ลบตัวเลขไปด้วย
+                if (birthdateInput.endsWith('/')) {
+                    birthdateInput = birthdateInput.slice(0, -1);
+                }
+            } else if (action === 'clear') {
+                // 3. ล้างทั้งหมด
+                birthdateInput = "";
+            }
+
+            updateBirthdateDisplay();
+        }
+
+        function updateBirthdateDisplay() {
+            const display = document.getElementById('birthdate-display');
+            let formattedDisplay = birthdateInput;
+
+            // ตรวจสอบ ถ้ายังไม่มีการกรอกข้อมูล ให้แสดง Placeholder
+            if (formattedDisplay.length === 0) {
+                display.textContent = 'DD/MM';
+                display.classList.add('text-gray-400'); // สีเทาสำหรับ Placeholder
+                return;
+            } else {
+                display.classList.remove('text-gray-400'); // ลบสีเทาออกเมื่อเริ่มกรอก
+            }
+
+            // แทนที่ตัวอักษรที่ยังไม่กรอกด้วย "_"
+            if (formattedDisplay.length < 5) {
+                // ใส่ / อัตโนมัติถ้ากรอก DD แล้ว
+                if (formattedDisplay.length >= 2 && !formattedDisplay.includes('/')) {
+                    formattedDisplay += '/';
+                }
+                // เติม "_"
+                formattedDisplay = formattedDisplay.padEnd(5, '_');
+            }
+
+            // แสดงผลในรูปแบบ DD/MM
+            display.textContent = formattedDisplay;
+        }
+        // --- END: Numpad Logic ---
+
+
+        // --- ADDED: Function to Render Gallery ---
+        function renderGallery() {
+            const container = document.getElementById('gallery-grid');
+            if (!container) return;
+
+            container.innerHTML = ''; // Clear existing content
+
+            // Rotation classes to cycle through for visual variety
+            const rotations = ['rotate-2', '-rotate-2', 'rotate-1', '-rotate-1'];
+
+            gallery.forEach((item, index) => {
+                // Skip items with empty images
+                if (!item.image) return;
+
+                const rotateClass = rotations[index % rotations.length];
+
+                const cardHTML = `
+                <div class="bg-white p-3 rounded-lg shadow-md transform ${rotateClass} hover:rotate-0 transition">
+                    <img src="${item.image}" onerror="this.onerror=null; this.src='https://placehold.co/400x300/f06292/ffffff?text=Memory';" class="w-full h-48 object-cover rounded">
+                    <p class="text-center text-gray-500 mt-2 text-sm">${item.title}</p>
+                </div>
+                `;
+                container.innerHTML += cardHTML;
+            });
+        }
+
+        // สถานะเพื่อติดตามว่าผู้ใช้เป็นคนกดเล่นเพลงเองหรือไม่
+        let isPlayingManually = false;
+
+        function checkBirthday() {
+            const dateInput = birthdateInput; // ใช้ค่าจากตัวแปร Numpad
+            const err = document.getElementById('error-msg');
+            err.classList.add('hidden'); // ซ่อนข้อความ error ก่อนเสมอ
+
+            if (dateInput.length !== 5 || !dateInput.includes('/')) {
+                err.classList.remove('hidden');
+                err.innerText = "กรุณากรอกวัน/เดือนเกิดให้ครบถ้วน (DD/MM) ก่อนน๊าาา";
+
+                // NEW: Haptic Error
+                haptic([50, 60, 50]);
+
+                birthdateInput = "";
+                updateBirthdateDisplay();
+                return;
+            }
+
+            const userMD = dateInput; // รูปแบบ DD/MM
+
+            console.log(`User input: ${dateInput}, Target MD: ${TARGET_BIRTHDAY_MD}`);
+
+            // NOTE: Currently always allows login for testing. For real use, uncomment the next line and remove the 'true' check.
+            if (userMD === TARGET_BIRTHDAY_MD) { // if (userMD === TARGET_BIRTHDAY_MD) {
+                playMusic();
+                goToPage(3); // CHANGE: Go to page 3 (Cake) instead of 2
+            } else {
+                err.classList.remove('hidden');
+                err.innerText = "เอ๊ะ! ไม่ใช่วันเกิดคนสวยของเค้านี่นา";
+
+                // NEW: Haptic Error
+                haptic([50, 100, 50, 100, 50]);
+
+                birthdateInput = "";
+                updateBirthdateDisplay();
+            }
+        }
+
+        // --- ADDED Redundant Pause Functions to handle Mobile Backgrounding ---
+
+        // ฟังก์ชันสั่งหยุดเพลงทันที
+        function pauseMusic() {
+            const audio = document.getElementById('bg-music');
+            if (!audio.paused) {
+                audio.pause();
+                console.log("Music paused due to app/tab loss of focus.");
+            }
+        }
+
+        // UPDATED: ฟังก์ชัน playMusic ถูกปรับให้รองรับ isPlayingManually และจัดการ Promise
+        function playMusic() {
+            const audio = document.getElementById('bg-music');
+            audio.volume = 0.3;
+
+            if (audio.paused) {
+                // พยายามเล่น
+                audio.play().then(() => {
+                    // หากเล่นสำเร็จ
+                    isPlayingManually = true;
+                    console.log("Audio started/resumed. isPlayingManually: true");
+                }).catch(e => {
+                    // หากถูกบล็อก (เช่น ต้องรอ user interaction)
+                    console.error("Audio autoplay blocked or user interaction required:", e);
+                    // isPlayingManually จะยังคงเป็น false/สถานะเดิมจนกว่าจะเล่นได้จริง
+                });
+            } else {
+                // หากเพลงกำลังเล่นอยู่แล้ว
+                isPlayingManually = true;
+            }
+        }
+
+        // 1. Listener สำหรับจัดการการเปลี่ยนสถานะแท็บ (มาตรฐาน)
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                // ถ้าหน้าต่างถูกซ่อน (minimize หรือเปิดแท็บอื่น)
+                pauseMusic();
+            } else {
+                // ถ้าหน้าต่างกลับมามองเห็นได้ (visible)
+                // ให้ตรวจสอบว่าผู้ใช้ได้กดปุ่มเล่นไว้หรือไม่
+                if (isPlayingManually) {
+                    playMusic(); // เล่นเพลงต่อ
+                    console.log("Tab visible, background music resumed.");
+                } else {
+                    console.log("Tab visible, music remains paused (user did not initiate play).");
+                }
+            }
+        });
+
+        // 2. ADDED: Listener สำหรับจัดการเมื่อหน้าต่างสูญเสียโฟกัส (มักจะช่วยบนมือถือเมื่อเปลี่ยนแอป)
+        window.addEventListener('blur', pauseMusic);
+        // 3. ADDED: Listener สำหรับจัดการเมื่อหน้าต่างได้โฟกัสกลับมา
+        window.addEventListener('focus', () => {
+            if (isPlayingManually) {
+                playMusic();
+            }
+        });
+
+        // 4. Fallback: Listener สำหรับจัดการเมื่อผู้ใช้กำลังออกจากหน้า (Page Hide)
+        window.addEventListener('pagehide', pauseMusic);
+
+
+        function goToPage(pageJson) {
+
+            // NEW: Haptic on navigation
+            haptic(15);
+
+            document.querySelectorAll('.page').forEach(p => {
+                p.classList.remove('active');
+                // Ensure display is set to none only after transition if it's not the target page
+                setTimeout(() => { if (!p.classList.contains('active')) p.style.display = 'none'; }, 1000);
+            });
+            const target = document.getElementById(`page-${pageJson}`);
+            target.style.display = 'flex';
+            // Wait a moment for display:flex to apply before starting transition
+            setTimeout(() => { target.classList.add('active'); }, 50);
+            if (pageJson === 5) initPuzzle(); // CHANGE: Puzzle is now page 5
+        }
+
+        // --- Cake Page Logic (No changes here, keeping only relevant functions) ---
+
+        // Random Pastel/Bright Color Pairs for striped candles
+        const colorPairs = [
+            ['#ff9a9e', '#fecfef'], // Pink/Rose
+            ['#a18cd1', '#fbc2eb'], // Purple/Pink
+            ['#84fab0', '#8fd3f4'], // Green/Blue
+            ['#fccb90', '#d57eeb'], // Orange/Purple
+            ['#e0c3fc', '#8ec5fc'], // Violet/Blue
+            ['#ffecd2', '#fcb69f']  // Peach/Orange
+        ];
+
+        function placeCandle(e) {
+            // หยุดถ้าปักเทียนครบแล้ว
+            if (currentCandles >= totalCandles) return;
+
+            // NEW: Haptic when placing candle
+            haptic(10);
+
+            const cakeElement = document.getElementById('new-cake');
+            const icingElement = document.getElementById('cake-surface'); // The .icing div
+            const nextBtn = document.getElementById('next-to-gallery-btn');
+            const wishMsg = document.getElementById('wish-message');
+
+            const rect = icingElement.getBoundingClientRect();
+            const clickX = e.clientX;
+            const clickY = e.clientY;
+
+            const clickedElement = document.elementFromPoint(clickX, clickY);
+
+            // Check if click point is over the icing surface element
+            if (clickedElement !== icingElement) {
+                console.log("Clicked outside valid area (icing surface). Aborting candle placement.");
+                return; // ออกจากฟังก์ชันทันทีหากไม่ได้คลิกบนพื้นผิวไอซิ่ง
+            }
+
+            const relativeX = clickX - rect.left;
+            const relativeY = clickY - rect.top;
+
+            const candle = document.createElement('div');
+            candle.className = 'candle';
+
+            // --- UPDATED: Color Logic for Striped Candle (Random 2 colors) ---
+            const randomPair = colorPairs[Math.floor(Math.random() * colorPairs.length)];
+
+            // Set CSS variables for the specific candle instance
+            candle.style.setProperty('--c1', randomPair[0]);
+            candle.style.setProperty('--c2', randomPair[1]);
+
+            // --- Random Rotation ---
+            const randomRot = Math.floor(Math.random() * 10) -5; // -10 to 10 deg
+
+            const icingOffsetLeft = parseInt(window.getComputedStyle(icingElement).left);
+            const icingOffsetTop = parseInt(window.getComputedStyle(icingElement).top);
+
+            candle.style.left = `${relativeX + icingOffsetLeft - 8}px`;
+            candle.style.top = `${relativeY + icingOffsetTop - 45}px`;
+            // Apply 3D transform + Random Rotation
+            candle.style.transform = `translateZ(75px) rotateX(-20deg) rotateZ(${randomRot}deg)`;
+
+            const flame = document.createElement('div');
+            flame.className = 'flame';
+            candle.appendChild(flame);
+
+            cakeElement.appendChild(candle);
+
+            currentCandles++;
+            console.log(`Candles placed: ${currentCandles} deg:${randomRot}`);
+
+            if (currentCandles === totalCandles) {
+                wishMsg.style.opacity = '1';
+                nextBtn.classList.remove('opacity-0', 'pointer-events-none');
+
+                document.querySelector('.cake-container').onclick = null;
+                createConfetti();
+            }
+        }
+
+        // --- Puzzle Page Logic (Drag & Drop) ---
+
+        function initPuzzle() {
+            const board = document.getElementById('puzzle-board');
+            board.innerHTML = '';
+            puzzleArr = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+            // Shuffle array (Fisher-Yates)
+            for (let i = puzzleArr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [puzzleArr[i], puzzleArr[j]] = [puzzleArr[j], puzzleArr[i]];
+            }
+
+            puzzleArr.forEach((val, index) => {
+                const piece = document.createElement('div');
+                piece.className = 'puzzle-piece';
+                piece.draggable = true;
+                piece.dataset.index = index;   // The current position in the array (0-8) - not strictly needed for swap logic but useful for debugging
+                piece.dataset.correct = val;   // The correct value (0-8) that should be at this index
+
+                const row = Math.floor(val / 3); // row for background position
+                const col = val % 3;             // column for background position
+
+                // Set the correct background slice
+                piece.style.backgroundImage = `url(${PUZZLE_IMAGE})`;
+                piece.style.backgroundPosition = `-${col * 100}px -${row * 100}px`;
+
+                // Add event listeners for drag (mouse)
+                piece.addEventListener('dragstart', handleDragStart);
+                piece.addEventListener('dragenter', handleDragEnter);
+                piece.addEventListener('dragover', handleDragOver);
+                piece.addEventListener('dragleave', handleDragLeave);
+                piece.addEventListener('drop', handleDrop);
+                piece.addEventListener('dragend', handleDragEnd);
+
+                // Add event listeners for touch (mobile)
+                piece.addEventListener('touchstart', handleTouchStart, { passive: false });
+                piece.addEventListener('touchmove', handleTouchMove, { passive: false });
+                piece.addEventListener('touchend', handleTouchEnd);
+
+                board.appendChild(piece);
+            });
+            checkPuzzle(); // Check immediately after shuffle
+        }
+
+        // --- Drag Handlers (Mouse) ---
+        function handleDragStart(e) {
+            dragSrcEl = this;
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.innerHTML);
+            this.classList.add('dragging');
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault(); // Necessary to allow drop
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+
+        function handleDragEnter(e) {
+            this.classList.add('over');
+        }
+
+        function handleDragLeave(e) {
+            this.classList.remove('over');
+        }
+
+        function handleDrop(e) {
+            e.stopPropagation();
+            if (dragSrcEl !== this) {
+                // Swap pieces by their background/correct data
+                const targetCorrect = this.dataset.correct;
+                const targetStyle = this.style.backgroundPosition;
+
+                this.dataset.correct = dragSrcEl.dataset.correct;
+                this.style.backgroundPosition = dragSrcEl.style.backgroundPosition;
+
+                dragSrcEl.dataset.correct = targetCorrect;
+                dragSrcEl.style.backgroundPosition = targetStyle;
+
+                checkPuzzle();
+            }
+            return false;
+        }
+
+        function handleDragEnd(e) {
+            document.querySelectorAll('.puzzle-piece').forEach(piece => {
+                piece.classList.remove('over');
+                piece.classList.remove('dragging');
+            });
+            dragSrcEl = null; // Clear the source element
+        }
+
+        // --- Touch Handlers (Mobile) ---
+
+        function handleTouchStart(e) {
+            e.preventDefault(); // Prevent scrolling/panning
+
+            // NEW: Haptic Start
+            haptic(10);
+
+            touchStartPiece = this;
+            touchStartPiece.classList.add('dragging');
+
+            const touch = e.touches[0];
+            touchSrc = {
+                x: touch.clientX,
+                y: touch.clientY
+            };
+
+            // Bring to front and scale for visual feedback
+            touchStartPiece.style.zIndex = '100';
+            touchStartPiece.style.transform = 'scale(1.1)';
+        }
+
+        function handleTouchMove(e) {
+            e.preventDefault(); // Prevent scrolling/panning
+            if (!touchStartPiece) return;
+
+            const touch = e.touches[0];
+            const dx = touch.clientX - touchSrc.x;
+            const dy = touch.clientY - touchSrc.y;
+
+            // Move the piece visually (transform: translate for smooth movement)
+            touchStartPiece.style.transform = `translate(${dx}px, ${dy}px) scale(1.1)`;
+
+            // --- CRITICAL FIX: Temporarily disable pointer events on the dragged piece ---
+            // This allows document.elementFromPoint to find the element underneath reliably
+            touchStartPiece.style.pointerEvents = 'none';
+            const targetElement = document.elementFromPoint(touch.clientX, touch.clientY);
+            touchStartPiece.style.pointerEvents = 'auto'; // Restore pointer events
+
+            // Handle hover visual feedback (Apply/Remove 'over' class)
+            // 1. Remove 'over' from the previous target (if any)
+            if (currentTouchTarget && currentTouchTarget !== touchStartPiece) {
+                currentTouchTarget.classList.remove('over');
+            }
+
+            // 2. Identify new target
+            if (targetElement && targetElement.classList.contains('puzzle-piece') && targetElement !== touchStartPiece) {
+                currentTouchTarget = targetElement;
+                currentTouchTarget.classList.add('over');
+            } else {
+                currentTouchTarget = null;
+            }
+        }
+
+        function handleTouchEnd(e) {
+            if (!touchStartPiece) return;
+
+            // NEW: Haptic End
+            haptic(20);
+
+            const dragged = touchStartPiece; // ชิ้นส่วนที่กำลังลาก
+            const target = currentTouchTarget; // ชิ้นส่วนเป้าหมายที่อยู่ใต้จุดวาง
+
+            // Reset visual immediately before attempting swap
+            dragged.classList.remove('dragging');
+            dragged.style.zIndex = '';
+
+            // *** Animate the dragged piece back to its original position ***
+            dragged.style.transform = '';
+
+            if (target) {
+                // *** Use setTimeout to allow the CSS transition (0.2s) to finish
+                // setTimeout(() => {
+                // 1. Swap the correct and background properties
+                const tempCorrect = target.dataset.correct;
+                const tempStyle = target.style.backgroundPosition;
+
+                target.dataset.correct = dragged.dataset.correct;
+                target.style.backgroundPosition = dragged.style.backgroundPosition;
+
+                dragged.dataset.correct = tempCorrect;
+                dragged.style.backgroundPosition = tempStyle;
+
+                // 2. Check the puzzle status after the visual swap
+                checkPuzzle();
+                // }, 100); // 200ms matches the CSS transition time (.puzzle-piece transition: transform 0.2s)
+
+                // Remove 'over' class after successful drop/swap
+                target.classList.remove('over');
+            }
+
+            // Clear all touch state variables
+            touchStartPiece = null;
+            touchSrc = null;
+            currentTouchTarget = null;
+        }
+
+
+        // --- Puzzle Check Logic ---
+        function checkPuzzle() {
+            const pieces = document.querySelectorAll('.puzzle-piece');
+            let isSolved = true;
+            pieces.forEach((piece, index) => {
+                // The puzzle is solved if the piece at index 'i' has the correct value 'i'
+                if (parseInt(piece.dataset.correct) !== index) {
+                    isSolved = false;
+                }
+            });
+
+            const successMsg = document.getElementById('puzzle-success');
+            const nextBtn = document.getElementById('next-to-card-btn');
+
+            if (isSolved) {
+                successMsg.classList.remove('hidden');
+                nextBtn.classList.remove('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
+
+                // Trigger confetti immediately if solved
+                haptic([50, 30, 80, 30, 120, 50, 200]);
+                createConfetti();
+            } else {
+                successMsg.classList.add('hidden');
+                nextBtn.classList.add('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
+            }
+        }
+
+        // --- Confetti Utility (Loads the library if not present) ---
+        function createConfetti() {
+            (function () {
+                // Check if confetti is already loaded/defined
+                if (typeof confetti !== 'undefined') {
+                    confetti({
+                        particleCount: 150,
+                        spread: 120,
+                        origin: { y: 0.6 }
+                    });
+                    return;
+                }
+                
+
+                // If not, inject the script and run
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.0/dist/confetti.browser.min.js';
+                script.onload = () => {
+                    confetti({
+                        particleCount: 150,
+                        spread: 120,
+                        origin: { y: 0.6 }
+                    });
+                };
+                document.head.appendChild(script);
+            })();
+        }
+
+        // --- Envelope Logic ---
+        function openEnvelope() {
+            const envelope = document.getElementById('envelope');
+            if (!envelope.classList.contains('open')) {
+                // NEW: Haptic Open
+                haptic([30, 40, 30, 40, 50]);
+                envelope.classList.add('open');
+            }
+        }
+
+        // Initial setup to load confetti library early
+        console.log("App loaded. Confetti utility available.");
+
+    </script>
+</body>
+
+</html>
