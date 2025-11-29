@@ -332,6 +332,8 @@
                 0 0 60px rgba(orange, 0.5), 0 0 80px rgba(orange, 0.5);
             transform-origin: 50% 90%;
             animation: flicker 1s ease-in-out alternate infinite;
+            cursor: pointer;
+            transition: opacity 0.3s;
         }
 
         @keyframes flicker {
@@ -363,6 +365,37 @@
                 transform: skewX(5deg);
                 box-shadow: 0 0 10px rgba(orange, 0.5), 0 0 20px rgba(orange, 0.5),
                     0 0 60px rgba(orange, 0.5), 0 0 80px rgba(orange, 0.5);
+            }
+        }
+
+        /* Smoke Animation for Blown Candles */
+        .smoke {
+            position: absolute;
+            width: 6px;
+            height: 10px;
+            background: rgba(200, 200, 200, 0.6);
+            top: -15px;
+            left: 50%;
+            margin-left: -3px;
+            border-radius: 50%;
+            animation: smoke-rise 2.5s ease-out forwards;
+            z-index: 9;
+            pointer-events: none;
+        }
+
+        @keyframes smoke-rise {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 0.6;
+            }
+
+            30% {
+                opacity: 0.4;
+            }
+
+            100% {
+                transform: translateY(-50px) scale(4);
+                opacity: 0;
             }
         }
 
@@ -620,7 +653,7 @@
         <!-- 3. CAKE PAGE (Was Page 2) -->
         <div id="page-3" class="page flex-col justify-center items-center">
             <h2 class="text-3xl font-bold text-pink-600 mb-8 title-font animate-bounce">Happy Birthday!</h2>
-            <p class="text-gray-600 mb-8">คลิกที่หน้าเค้กเพื่อปักเทียนให้ครบ 5 เล่มนะ!</p>
+            <p id="cake-instruction" class="text-gray-600 mb-8">คลิกที่หน้าเค้กเพื่อปักเทียนให้ครบ 5 เล่มนะ!</p>
 
             <div class="cake-container" onclick="placeCandle(event)">
                 <div class="cake" id="new-cake">
@@ -637,11 +670,24 @@
             </div>
 
             <div id="wish-message" class="mt-20 text-center opacity-0 transition-opacity duration-1000">
-                <p class="text-2xl text-pink-700 font-bold mb-4">✨ อธิษฐานเลย! ✨</p>
-                <!-- ปุ่มถูกซ่อนไว้ในตอนแรก และจะแสดงเมื่อปักเทียนครบตามเงื่อนไขเท่านั้น --><button
-                    id="next-to-gallery-btn" onclick="goToPage(4)"
-                    class="bg-white border-2 border-pink-500 text-pink-500 px-6 py-2 rounded-full hover:bg-pink-500 hover:text-white transition shadow-md opacity-0 pointer-events-none">
-                    อธิษฐานเสร็จแล้ว ไปต่อเลย <i class="fas fa-arrow-right"></i>
+                <p id="wish-text" class="text-2xl text-pink-700 font-bold mb-4">✨ หลับตาอธิษฐานเลย! ✨</p>
+                
+                <!-- ปุ่มยืนยันการอธิษฐาน -->
+                <button id="confirm-wish-btn" onclick="finishWishing()"
+                    class="bg-pink-500 text-white px-6 py-2 rounded-full hover:bg-pink-600 transition shadow-md">
+                    อธิษฐานเสร็จแล้ว <i class="fas fa-check"></i>
+                </button>
+
+                <!-- ข้อความแนะนำการเป่า (ซ่อนอยู่ตอนแรก) -->
+                <div id="blow-instruction" class="hidden">
+                    <p class="text-lg text-gray-600 mb-2">เป่าลมที่ไมค์เพื่อดับเทียนเลย! 💨</p>
+                    <p class="text-xs text-gray-400">(หรือแตะที่เปลวไฟเพื่อดับ)</p>
+                </div>
+
+                <!-- ปุ่มไปต่อ (แสดงเมื่อเทียนดับหมด) -->
+                <button id="next-to-gallery-btn" onclick="goToPage(4)"
+                    class="hidden mt-4 bg-white border-2 border-pink-500 text-pink-500 px-6 py-2 rounded-full hover:bg-pink-500 hover:text-white transition shadow-md">
+                    ไปต่อเลย <i class="fas fa-arrow-right"></i>
                 </button>
             </div>
         </div>
@@ -690,7 +736,7 @@
                             ขอให้มีความสุขในทุกๆวัน<br>
                             ขอให้ทุกสิ่งที่คิด ทุกสิ่งที่ฝัน<br>
                             เป็นจริงอย่างที่เธอตั้งใจเอาไว้นะ<br>
-                            
+
                         </p>
                         <div class="mt-2 text-[14px]">🍰🎁🎈</div>
                     </div>
@@ -714,6 +760,12 @@
         const PUZZLE_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg";
         let currentCandles = 0;
         const totalCandles = 5;
+        let candlesExtinguished = 0;
+        let isBlowingMode = false;
+        let audioContext;
+        let analyser;
+        let microphone;
+
         let puzzleArr = [0, 1, 2, 3, 4, 5, 6, 7, 8];
         let dragSrcEl = null;
         let touchStartPiece = null;
@@ -995,7 +1047,7 @@
             if (pageJson === 5) initPuzzle(); // CHANGE: Puzzle is now page 5
         }
 
-        // --- Cake Page Logic (No changes here, keeping only relevant functions) ---
+        // --- Cake Page Logic (UPDATED) ---
 
         // Random Pastel/Bright Color Pairs for striped candles
         const colorPairs = [
@@ -1004,31 +1056,32 @@
             ['#84fab0', '#8fd3f4'], // Green/Blue
             ['#fccb90', '#d57eeb'], // Orange/Purple
             ['#e0c3fc', '#8ec5fc'], // Violet/Blue
-            ['#ffecd2', '#fcb69f']  // Peach/Orange
+            ['#ffecd2', '#fcb69f'], // Peach/Orange
+            ['#f6d365', '#fda085'], // Yellow/Orange
+            ['#cfd9df', '#e2ebf0']  // Gray/Blue
         ];
 
-        function placeCandle(e) {
-            // หยุดถ้าปักเทียนครบแล้ว
-            if (currentCandles >= totalCandles) return;
+        let availableColors = [...colorPairs];
 
-            // NEW: Haptic when placing candle
+        function placeCandle(e) {
+            if (currentCandles >= totalCandles) return;
+            // หากอยู่ในโหมดเป่าเทียน ไม่ให้ปักเพิ่ม
+            if (isBlowingMode) return;
+
             haptic(10);
 
             const cakeElement = document.getElementById('new-cake');
-            const icingElement = document.getElementById('cake-surface'); // The .icing div
-            const nextBtn = document.getElementById('next-to-gallery-btn');
+            const icingElement = document.getElementById('cake-surface');
             const wishMsg = document.getElementById('wish-message');
+            const instruction = document.getElementById('cake-instruction');
 
             const rect = icingElement.getBoundingClientRect();
             const clickX = e.clientX;
             const clickY = e.clientY;
 
             const clickedElement = document.elementFromPoint(clickX, clickY);
-
-            // Check if click point is over the icing surface element
             if (clickedElement !== icingElement) {
-                console.log("Clicked outside valid area (icing surface). Aborting candle placement.");
-                return; // ออกจากฟังก์ชันทันทีหากไม่ได้คลิกบนพื้นผิวไอซิ่ง
+                return;
             }
 
             const relativeX = clickX - rect.left;
@@ -1036,41 +1089,164 @@
 
             const candle = document.createElement('div');
             candle.className = 'candle';
+            candle.id = `candle-${currentCandles}`; // Assign ID for easier access
 
-            // --- UPDATED: Color Logic for Striped Candle (Random 2 colors) ---
-            const randomPair = colorPairs[Math.floor(Math.random() * colorPairs.length)];
+            if (availableColors.length === 0) {
+                availableColors = [...colorPairs];
+            }
+            const randomIndex = Math.floor(Math.random() * availableColors.length);
+            const randomPair = availableColors.splice(randomIndex, 1)[0];
 
-            // Set CSS variables for the specific candle instance
             candle.style.setProperty('--c1', randomPair[0]);
             candle.style.setProperty('--c2', randomPair[1]);
 
-            // --- Random Rotation ---
-            const randomRot = Math.floor(Math.random() * 10) -5; // -10 to 10 deg
+            const randomRot = Math.floor(Math.random() * 10) - 5; 
 
-            const icingOffsetLeft = parseInt(window.getComputedStyle(icingElement).left);
-            const icingOffsetTop = parseInt(window.getComputedStyle(icingElement).top);
+            const icingOffsetLeft = parseInt(window.getComputedStyle(icingElement).left) || 0;
+            const icingOffsetTop = parseInt(window.getComputedStyle(icingElement).top) || 0;
 
             candle.style.left = `${relativeX + icingOffsetLeft - 8}px`;
             candle.style.top = `${relativeY + icingOffsetTop - 45}px`;
-            // Apply 3D transform + Random Rotation
             candle.style.transform = `translateZ(75px) rotateX(-20deg) rotateZ(${randomRot}deg)`;
 
             const flame = document.createElement('div');
             flame.className = 'flame';
+            // Click to extinguish (fallback)
+            flame.onclick = (event) => {
+                event.stopPropagation(); // Prevent cake click
+                if(isBlowingMode) extinguishCandle(candle);
+            };
             candle.appendChild(flame);
 
             cakeElement.appendChild(candle);
 
             currentCandles++;
-            console.log(`Candles placed: ${currentCandles} deg:${randomRot}`);
 
             if (currentCandles === totalCandles) {
+                // Step 1: Show Wish Message (Before Blowing)
                 wishMsg.style.opacity = '1';
-                nextBtn.classList.remove('opacity-0', 'pointer-events-none');
-
-                document.querySelector('.cake-container').onclick = null;
-                createConfetti();
+                instruction.style.opacity = '0';
+                
+                // Disable clicking on cake to place more
+                // document.querySelector('.cake-container').onclick = null; // Removed to allow bubbling for fallback clicks
             }
+        }
+
+        // --- Wishing & Blowing Logic ---
+
+        function finishWishing() {
+            const wishText = document.getElementById('wish-text');
+            const confirmBtn = document.getElementById('confirm-wish-btn');
+            const blowInstruction = document.getElementById('blow-instruction');
+
+            // Change UI to Blowing Mode
+            wishText.textContent = "🎂 เป่าเทียนเลย! 🎂";
+            confirmBtn.style.display = 'none';
+            blowInstruction.classList.remove('hidden');
+
+            isBlowingMode = true;
+            
+            // Start Microphone Detection
+            initBlowDetection();
+        }
+
+        function initBlowDetection() {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                console.warn("Media Devices not supported.");
+                return;
+            }
+
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(function(stream) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    analyser = audioContext.createAnalyser();
+                    microphone = audioContext.createMediaStreamSource(stream);
+                    microphone.connect(analyser);
+                    analyser.fftSize = 256;
+                    
+                    const bufferLength = analyser.frequencyBinCount;
+                    const dataArray = new Uint8Array(bufferLength);
+
+                    function detectBlow() {
+                        if (!isBlowingMode || candlesExtinguished >= totalCandles) {
+                            if(audioContext && audioContext.state !== 'closed') {
+                                // Close context if done to save battery
+                                // audioContext.close(); 
+                            }
+                            return; 
+                        }
+
+                        analyser.getByteFrequencyData(dataArray);
+                        let sum = 0;
+                        // Focus on lower frequencies for breath sounds
+                        for(let i = 0; i < bufferLength; i++) {
+                            sum += dataArray[i];
+                        }
+                        let average = sum / bufferLength;
+
+                        // Threshold for "blowing"
+                        if (average > 40) { // Adjust sensitivity
+                            // Randomly extinguish a candle if blowing is detected
+                             const candles = document.querySelectorAll('.candle:not(.extinguished)');
+                             if (candles.length > 0) {
+                                 // Extinguish logic: higher volume = faster extinguish
+                                 if (Math.random() > 0.8) { // Add some randomness so they don't all go out instantly unless loud
+                                     extinguishCandle(candles[Math.floor(Math.random() * candles.length)].parentElement);
+                                 }
+                             }
+                        }
+
+                        requestAnimationFrame(detectBlow);
+                    }
+
+                    detectBlow();
+                })
+                .catch(function(err) {
+                    console.log('Mic access denied or error: ' + err);
+                });
+        }
+
+        function extinguishCandle(candleElement) {
+            // Check if already extinguished to prevent double counting
+            if (candleElement.classList.contains('extinguished')) return;
+            
+            candleElement.classList.add('extinguished'); // Mark as done
+
+            const flame = candleElement.querySelector('.flame');
+            if (flame) {
+                // 1. Remove Flame
+                flame.style.opacity = '0';
+                setTimeout(() => flame.remove(), 500);
+
+                // 2. Add Smoke
+                const smoke = document.createElement('div');
+                smoke.className = 'smoke';
+                candleElement.appendChild(smoke);
+                
+                // 3. Increment Count
+                candlesExtinguished++;
+                haptic(5); // Light feedback
+                
+                // 4. Check if all done
+                if (candlesExtinguished >= totalCandles) {
+                    allCandlesExtinguished();
+                }
+            }
+        }
+
+        function allCandlesExtinguished() {
+            const nextBtn = document.getElementById('next-to-gallery-btn');
+            const wishText = document.getElementById('wish-text');
+            const blowInstruction = document.getElementById('blow-instruction');
+
+            wishText.textContent = "🎉 เย้! สุขสันต์วันเกิดนะ 🎉";
+            blowInstruction.style.display = 'none';
+            
+            nextBtn.classList.remove('hidden');
+            nextBtn.classList.remove('opacity-0', 'pointer-events-none');
+            
+            createConfetti();
+            haptic([100, 50, 100, 50, 200]);
         }
 
         // --- Puzzle Page Logic (Drag & Drop) ---
@@ -1302,7 +1478,7 @@
                     });
                     return;
                 }
-                
+
 
                 // If not, inject the script and run
                 const script = document.createElement('script');
