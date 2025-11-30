@@ -680,7 +680,7 @@
 
                 <!-- ข้อความแนะนำการเป่า (ซ่อนอยู่ตอนแรก) -->
                 <div id="blow-instruction" class="hidden">
-                    <p class="text-lg text-gray-600 mb-2">เป่าลมที่ไมค์เพื่อดับเทียนเลย! 💨</p>
+                    <p class="text-lg text-gray-600 mb-2">เป่าลมเบา ๆ ที่ไมค์เพื่อดับเทียนเลย! 💨</p>
                     <p class="text-xs text-gray-400">(หรือแตะที่เปลวไฟเพื่อดับ)</p>
                 </div>
 
@@ -1114,7 +1114,7 @@
             // Click to extinguish (fallback)
             flame.onclick = (event) => {
                 event.stopPropagation(); // Prevent cake click
-                if(isBlowingMode) extinguishCandle(candle);
+                if(isBlowingMode) extinguishAllCandles(); // CHANGED: Extinguish all on click too
             };
             candle.appendChild(flame);
 
@@ -1132,7 +1132,7 @@
             }
         }
 
-        // --- Wishing & Blowing Logic ---
+        // --- Wishing & Blowing Logic (UPDATED) ---
 
         function finishWishing() {
             const wishText = document.getElementById('wish-text');
@@ -1166,12 +1166,15 @@
                     
                     const bufferLength = analyser.frequencyBinCount;
                     const dataArray = new Uint8Array(bufferLength);
+                    
+                    // Set a flag to prevent multiple triggers in one frame
+                    let blowDetected = false;
 
                     function detectBlow() {
                         if (!isBlowingMode || candlesExtinguished >= totalCandles) {
+                            // If blowing is done, stop detecting
                             if(audioContext && audioContext.state !== 'closed') {
-                                // Close context if done to save battery
-                                // audioContext.close(); 
+                                // audioContext.close(); // Keep open if the user returns to the page
                             }
                             return; 
                         }
@@ -1184,16 +1187,18 @@
                         }
                         let average = sum / bufferLength;
 
-                        // Threshold for "blowing"
-                        if (average > 40) { // Adjust sensitivity
-                            // Randomly extinguish a candle if blowing is detected
-                             const candles = document.querySelectorAll('.candle:not(.extinguished)');
-                             if (candles.length > 0) {
-                                 // Extinguish logic: higher volume = faster extinguish
-                                 if (Math.random() > 0.8) { // Add some randomness so they don't all go out instantly unless loud
-                                     extinguishCandle(candles[Math.floor(Math.random() * candles.length)].parentElement);
-                                 }
-                             }
+                        // NEW SENSITIVITY: 25 is a light blow threshold
+                        if (average > 25 && !blowDetected) { 
+                            blowDetected = true; // Set flag
+                            console.log(`Blow detected! Average volume: ${average}`);
+                            
+                            // *** NEW LOGIC: Extinguish all candles at once ***
+                            extinguishAllCandles();
+                            
+                            // Delay the reset of the flag to prevent immediate re-trigger from the same blow
+                            setTimeout(() => {
+                                blowDetected = false;
+                            }, 500); // Wait 0.5s before allowing another blow detection
                         }
 
                         requestAnimationFrame(detectBlow);
@@ -1203,11 +1208,31 @@
                 })
                 .catch(function(err) {
                     console.log('Mic access denied or error: ' + err);
+                    // If mic access is denied, hide the instruction and rely only on tap
+                    document.getElementById('blow-instruction').innerHTML = `
+                        <p class="text-lg text-red-500 mb-2">ไม่สามารถเข้าถึงไมค์ได้</p>
+                        <p class="text-xs text-gray-400">กรุณาแตะที่เปลวไฟเพื่อดับเทียน</p>
+                    `;
                 });
         }
-
-        function extinguishCandle(candleElement) {
-            // Check if already extinguished to prevent double counting
+        
+        // NEW FUNCTION: Extinguishes all remaining candles
+        function extinguishAllCandles() {
+            const candles = document.querySelectorAll('.candle:not(.extinguished)');
+            if (candles.length > 0) {
+                haptic([10, 10, 10, 10, 10]); // Haptic feedback for mass extinction
+                
+                // Use a loop to extinguish them one by one with a small visual delay
+                candles.forEach((candle, index) => {
+                    setTimeout(() => {
+                        extinguishSingleCandle(candle);
+                    }, index * 100); // 100ms delay between each candle for a visual ripple effect
+                });
+            }
+        }
+        
+        // NEW FUNCTION: Handles the animation for a single candle
+        function extinguishSingleCandle(candleElement) {
             if (candleElement.classList.contains('extinguished')) return;
             
             candleElement.classList.add('extinguished'); // Mark as done
@@ -1225,7 +1250,6 @@
                 
                 // 3. Increment Count
                 candlesExtinguished++;
-                haptic(5); // Light feedback
                 
                 // 4. Check if all done
                 if (candlesExtinguished >= totalCandles) {
@@ -1233,6 +1257,7 @@
                 }
             }
         }
+
 
         function allCandlesExtinguished() {
             const nextBtn = document.getElementById('next-to-gallery-btn');
@@ -1247,6 +1272,12 @@
             
             createConfetti();
             haptic([100, 50, 100, 50, 200]);
+            
+            // Close mic usage after done
+            if (microphone) {
+                microphone.mediaStream.getTracks().forEach(track => track.stop());
+                console.log("Microphone stream stopped.");
+            }
         }
 
         // --- Puzzle Page Logic (Drag & Drop) ---
