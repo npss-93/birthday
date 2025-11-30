@@ -27,6 +27,9 @@
             overflow-x: hidden;
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
+            /* NEW: Use dynamic viewport height for better mobile fullscreen adjustment */
+            height: 100vh;
+            height: 100dvh;
         }
 
         .title-font {
@@ -43,7 +46,9 @@
             display: none;
             opacity: 0;
             transition: opacity 1s ease-in-out;
+            /* NEW: Use dynamic viewport height */
             height: 100vh;
+            height: 100dvh;
             width: 100%;
             position: absolute;
             top: 0;
@@ -413,6 +418,8 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
             background: #eee;
             touch-action: none;
+            /* Added transition for smooth join */
+            transition: gap 0.5s ease;
         }
 
         .puzzle-piece {
@@ -421,8 +428,8 @@
             background-size: 300px 300px;
             cursor: grab;
             border: 1px solid rgba(255, 255, 255, 0.5);
-            /* ADDED: Transition for smooth visual return/reset */
-            transition: transform 0s ease-out, opacity 0.1s;
+            /* ADDED: Transition for smooth visual return/reset and border removal */
+            transition: transform 0s ease-out, opacity 0.1s, border 0.5s ease;
         }
 
         .puzzle-piece.dragging {
@@ -592,21 +599,24 @@
 
 <body>
 
-    <div id="app" class="w-full h-screen relative overflow-hidden flex items-center justify-center">
+    <div id="app" class="w-full min-h-screen flex flex-col items-center justify-center p-6 pt-6">
 
         <!-- Page 1: Landing Page (New Start Page) -->
-        <div id="page-1" class="page active flex-col items-center justify-center text-center">
+        <div id="page-1" class="page flex-col items-center justify-center text-center">
             <h1 class="font-family-Ribeye text-6xl text-pink-600 mb-4 animate-pulse leading-normal">Happy Birthday!</h1>
             <p class="text-xl text-gray-500 mb-8">คุณพร้อมที่จะไปดูของขวัญแล้วหรือยัง?</p>
             <button id="startButton" onclick="goToPage(2)"
                 class="px-8 py-3 bg-pink-500 text-white text-lg font-semibold rounded-xl shadow-lg hover:bg-pink-600 transition duration-300 transform hover:scale-105">
                 ไปกันเล้ยยย <i class="fas fa-arrow-right ml-2"></i>
             </button>
+            <!-- <p class="mt-4 text-xs text-gray-400">
+                <i class="fas fa-mobile-alt"></i> จะเข้าสู่โหมดเต็มจอเพื่อประสบการณ์ที่ดีที่สุด
+            </p> -->
         </div>
 
         <!-- 2. LOGIN (Was Page 1) -->
         <div id="page-2" class="page flex-col justify-center items-center bg-pink-50 px-4">
-            <div class="bg-white p-8 rounded-2xl shadow-xl text-center max-w-sm w-full mx-4">
+            <div class="bg-white px-6 py-4 rounded-2xl shadow-xl text-center max-w-sm w-full mx-4">
                 <div class="text-4xl mb-4">🔒</div>
                 <h1 class="text-2xl font-bold text-pink-600 mb-2">ยืนยันตัวตนก่อนนะ</h1>
                 <p class="text-gray-500 mb-6">กรอกวัน/เดือนเกิดของเธอ เพื่อไปต่อน๊าาา</p>
@@ -671,7 +681,7 @@
 
             <div id="wish-message" class="mt-20 text-center opacity-0 transition-opacity duration-1000">
                 <p id="wish-text" class="text-2xl text-pink-700 font-bold mb-4">✨ หลับตาอธิษฐานเลย! ✨</p>
-                
+
                 <!-- ปุ่มยืนยันการอธิษฐาน -->
                 <button id="confirm-wish-btn" onclick="finishWishing()"
                     class="bg-pink-500 text-white px-6 py-2 rounded-full hover:bg-pink-600 transition shadow-md">
@@ -694,10 +704,10 @@
 
         <!-- 4. GALLERY (Was Page 3) -->
         <!-- FIX: Added pb-32 to ensure bottom button is reachable on mobile -->
-        <div id="page-4" class="page flex-col justify-start items-center pt-10 pb-32 overflow-y-auto">
+        <div id="page-4" class="page active flex-col justify-start items-center pt-10 pb-32 overflow-y-auto">
             <h2 class="text-3xl text-pink-600 font-bold mb-6 title-font">Our Memories</h2>
             <!-- Added ID for JS population -->
-            <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 px-6 pb-10 w-full max-w-2xl">
+            <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6 px-6 pb-10 w-full max-w-2xl">
                 <!-- Gallery items will be injected here by renderGallery() -->
             </div>
             <button onclick="goToPage(5)"
@@ -708,7 +718,7 @@
 
         <!-- 5. PUZZLE (Was Page 4) -->
         <div id="page-5" class="page flex-col justify-center items-center">
-            <h2 class="text-2xl text-pink-600 font-bold mb-2">เรียงรูปของเราให้ถูกต้องหน่อย</h2>
+            <h2 class="text-2xl text-pink-600 font-bold mb-2">เรียงรูปของเราให้ถูกต้องนะ</h2>
             <p class="text-sm text-gray-500 mb-6">ลากชิ้นส่วนสลับกัน (Drag & Drop)</p>
             <div class="puzzle-container" id="puzzle-board"></div>
             <p id="puzzle-success" class="text-green-500 font-bold mt-4 hidden text-xl">เก่งมาก! 🎉</p>
@@ -722,7 +732,7 @@
         <div id="page-6" class="page flex-col justify-center items-center bg-pink-100">
             <h2 class="text-[40px] text-pink-600 font-bold mb-[50px] title-font">For You...</h2>
 
-            <div class="envelope-wrapper" onclick="openEnvelope()">
+            <div class="envelope-wrapper mt-[100px]" onclick="openEnvelope()">
 
                 <div class="envelope" id="envelope">
                     <div class="envelope-back"></div>
@@ -746,7 +756,7 @@
                     <div class="envelope-flap"></div>
                 </div>
             </div>
-            <p class="mt-[2px] text-gray-500 animate-pulse">แตะที่ซองจดหมายเพื่อเปิด</p>
+            <p id="tapEnvelope" class="-mt-6 text-gray-500 animate-pulse">แตะที่ซองจดหมายเพื่อเปิด</p>
         </div>
     </div>
 
@@ -757,7 +767,7 @@
     <script>
         // Note: Birthday check is currently set to true for easy testing.
         const TARGET_BIRTHDAY_MD = "04/12";
-        const PUZZLE_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/3/3a/Cat03.jpg";
+        const PUZZLE_IMAGE = "https://raw.githubusercontent.com/npss-93/birthday/main/images/puzzle.jpg";
         let currentCandles = 0;
         const totalCandles = 5;
         let candlesExtinguished = 0;
@@ -775,17 +785,47 @@
 
         const gallery = [
             {
-                title: 'วันแรกที่เจอกัน',
-                image: 'https://images.unsplash.com/photo-1516961642265-531546e84af2?q=80&w=400&auto=format&fit=crop'
+                title: 'เขาช่องลม',
+                image: 'https://raw.githubusercontent.com/npss-93/birthday/main/images/KhaoChongLom.jpg'
+            },
+            {
+                title: 'เที่ยวทะเล',
+                image: 'https://raw.githubusercontent.com/npss-93/birthday/main/images/Sea.jpg'
             },
             {
                 title: 'ทริปเชียงใหม่',
-                image: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=400&auto=format&fit=crop'
+                image: 'https://raw.githubusercontent.com/npss-93/birthday/main/images/ChiangMai.jpg'
             },
             {
-                title: 'เดทของเรา',
-                image: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=400&auto=format&fit=crop'
-            },
+                // Placeholder if you want to add more, I've filled it with the Film Camera memory to keep 4 items
+                title: 'ทริปแม่ฮ่องสอน',
+                image: 'https://raw.githubusercontent.com/npss-93/birthday/main/images/MaeHongSon.jpg'
+            }
+            ,
+            {
+                // Placeholder if you want to add more, I've filled it with the Film Camera memory to keep 4 items
+                title: 'ภาพจากกล้องฟิล์ม',
+                image: 'https://images.unsplash.com/photo-1549414249-1d48c8f0e0c8?q=80&w=400&auto=format&fit=crop'
+            }
+            ,
+            {
+                // Placeholder if you want to add more, I've filled it with the Film Camera memory to keep 4 items
+                title: 'ภาพจากกล้องฟิล์ม',
+                image: 'https://images.unsplash.com/photo-1549414249-1d48c8f0e0c8?q=80&w=400&auto=format&fit=crop'
+            }
+            ,
+            {
+                // Placeholder if you want to add more, I've filled it with the Film Camera memory to keep 4 items
+                title: 'ภาพจากกล้องฟิล์ม',
+                image: '/home/dev/Desktop/new_in.png'
+            }
+            ,
+            {
+                // Placeholder if you want to add more, I've filled it with the Film Camera memory to keep 4 items
+                title: 'ภาพจากกล้องฟิล์ม',
+                image: 'https://images.unsplash.com/photo-1549414249-1d48c8f0e0c8?q=80&w=400&auto=format&fit=crop'
+            }
+            ,
             {
                 // Placeholder if you want to add more, I've filled it with the Film Camera memory to keep 4 items
                 title: 'ภาพจากกล้องฟิล์ม',
@@ -874,10 +914,10 @@
 
         function updateBirthdateDisplay() {
             const display = document.getElementById('birthdate-display');
-            let formattedDisplay = birthdateInput;
+            let rawInput = birthdateInput;
 
             // ตรวจสอบ ถ้ายังไม่มีการกรอกข้อมูล ให้แสดง Placeholder
-            if (formattedDisplay.length === 0) {
+            if (rawInput.length === 0) {
                 display.textContent = 'DD/MM';
                 display.classList.add('text-gray-400'); // สีเทาสำหรับ Placeholder
                 return;
@@ -885,9 +925,13 @@
                 display.classList.remove('text-gray-400'); // ลบสีเทาออกเมื่อเริ่มกรอก
             }
 
+            // แปลงตัวเลขเป็น * แต่เก็บ / ไว้
+            let formattedDisplay = rawInput.replace(/[0-9]/g, '*');
+            // let formattedDisplay = rawInput;
+
             // แทนที่ตัวอักษรที่ยังไม่กรอกด้วย "_"
             if (formattedDisplay.length < 5) {
-                // ใส่ / อัตโนมัติถ้ากรอก DD แล้ว
+                // ใส่ / อัตโนมัติในส่วนแสดงผล ถ้ากรอก DD ครบแล้ว (เพื่อให้เห็นโครงสร้าง **/__)
                 if (formattedDisplay.length >= 2 && !formattedDisplay.includes('/')) {
                     formattedDisplay += '/';
                 }
@@ -895,7 +939,7 @@
                 formattedDisplay = formattedDisplay.padEnd(5, '_');
             }
 
-            // แสดงผลในรูปแบบ DD/MM
+            // แสดงผล
             display.textContent = formattedDisplay;
         }
         // --- END: Numpad Logic ---
@@ -917,10 +961,14 @@
 
                 const rotateClass = rotations[index % rotations.length];
 
+                // MODIFIED: เปลี่ยน cardHTML ให้เป็นแนวตั้ง (Portrait)
+                // ใช้ flex-col และ aspect-[3/4] สำหรับ container รูปภาพ
                 const cardHTML = `
-                <div class="bg-white p-3 rounded-lg shadow-md transform ${rotateClass} hover:rotate-0 transition">
-                    <img src="${item.image}" onerror="this.onerror=null; this.src='https://placehold.co/400x300/f06292/ffffff?text=Memory';" class="w-full h-48 object-cover rounded">
-                    <p class="text-center text-gray-500 mt-2 text-sm">${item.title}</p>
+                <div class="bg-white p-4 rounded-xl shadow-lg transform ${rotateClass} hover:rotate-0 transition duration-300 flex flex-col items-center">
+                    <div class="w-full aspect-[3/4] overflow-hidden rounded-lg mb-3 bg-gray-100">
+                        <img src="${item.image}" onerror="this.onerror=null; this.src='https://placehold.co/300x400/f06292/ffffff?text=Memory';" class="w-full h-full object-cover">
+                    </div>
+                    <p class="text-center text-pink-600 font-medium text-sm md:text-base">${item.title}</p>
                 </div>
                 `;
                 container.innerHTML += cardHTML;
@@ -929,6 +977,60 @@
 
         // สถานะเพื่อติดตามว่าผู้ใช้เป็นคนกดเล่นเพลงเองหรือไม่
         let isPlayingManually = false;
+
+        // --- UPDATED: Fullscreen Logic ---
+        function enterFullscreenAndProceed() {
+            const element = document.documentElement; // Target the whole HTML document (<html> tag)
+            const proceed = () => {
+                // Use a short delay to ensure Fullscreen API has time to execute (optional but safer)
+                setTimeout(() => goToPage(2), 100);
+            };
+
+            // ตรวจสอบว่ามี element ที่รองรับ Fullscreen API หรือไม่
+            if (element.requestFullscreen) {
+                // Standard API (Chrome, Firefox, Edge, newer Safari)
+                element.requestFullscreen()
+                    .then(proceed)
+                    .catch((err) => {
+                        console.error(`Fullscreen request failed: ${err.message}. Proceeding without fullscreen.`);
+                        // Proceed even if fullscreen fails
+                        proceed();
+                    });
+            } else if (element.webkitRequestFullscreen) {
+                // Webkit prefix (older Safari, etc.)
+                element.webkitRequestFullscreen()
+                    .then(proceed)
+                    .catch(() => proceed());
+            } else if (element.msRequestFullscreen) {
+                // Microsoft prefix (IE/Edge legacy)
+                element.msRequestFullscreen()
+                    .then(proceed)
+                    .catch(() => proceed());
+            } else {
+                // Fallback: Just navigate
+                proceed();
+            }
+        }
+
+        /**
+         * @function exitFullscreen
+         * @description Function to exit fullscreen mode.
+         * (สำหรับออกจากโหมดเต็มจอเมื่อผู้ใช้เปิดซองจดหมายแล้ว)
+         */
+        function exitFullscreen() {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.mozCancelFullScreen) { /* Firefox */
+                document.mozCancelFullScreen();
+            } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) { /* IE/Edge */
+                document.msExitFullscreen();
+            }
+            console.log("Exited Fullscreen Mode.");
+        }
+        // --- END: Fullscreen Logic ---
+
 
         function checkBirthday() {
             const dateInput = birthdateInput; // ใช้ค่าจากตัวแปร Numpad
@@ -1058,7 +1160,7 @@
             ['#e0c3fc', '#8ec5fc'], // Violet/Blue
             ['#ffecd2', '#fcb69f'], // Peach/Orange
             ['#f6d365', '#fda085'], // Yellow/Orange
-            ['#cfd9df', '#e2ebf0']  // Gray/Blue
+            ['#cfd9df', '#e2ebf0'] // Gray/Blue
         ];
 
         let availableColors = [...colorPairs];
@@ -1100,7 +1202,7 @@
             candle.style.setProperty('--c1', randomPair[0]);
             candle.style.setProperty('--c2', randomPair[1]);
 
-            const randomRot = Math.floor(Math.random() * 10) - 5; 
+            const randomRot = Math.floor(Math.random() * 10) - 5;
 
             const icingOffsetLeft = parseInt(window.getComputedStyle(icingElement).left) || 0;
             const icingOffsetTop = parseInt(window.getComputedStyle(icingElement).top) || 0;
@@ -1114,7 +1216,7 @@
             // Click to extinguish (fallback)
             flame.onclick = (event) => {
                 event.stopPropagation(); // Prevent cake click
-                if(isBlowingMode) extinguishAllCandles(); // CHANGED: Extinguish all on click too
+                if (isBlowingMode) extinguishAllCandles(); // CHANGED: Extinguish all on click too
             };
             candle.appendChild(flame);
 
@@ -1126,7 +1228,7 @@
                 // Step 1: Show Wish Message (Before Blowing)
                 wishMsg.style.opacity = '1';
                 instruction.style.opacity = '0';
-                
+
                 // Disable clicking on cake to place more
                 // document.querySelector('.cake-container').onclick = null; // Removed to allow bubbling for fallback clicks
             }
@@ -1145,7 +1247,7 @@
             blowInstruction.classList.remove('hidden');
 
             isBlowingMode = true;
-            
+
             // Start Microphone Detection
             initBlowDetection();
         }
@@ -1157,44 +1259,44 @@
             }
 
             navigator.mediaDevices.getUserMedia({ audio: true })
-                .then(function(stream) {
+                .then(function (stream) {
                     audioContext = new (window.AudioContext || window.webkitAudioContext)();
                     analyser = audioContext.createAnalyser();
                     microphone = audioContext.createMediaStreamSource(stream);
                     microphone.connect(analyser);
                     analyser.fftSize = 256;
-                    
+
                     const bufferLength = analyser.frequencyBinCount;
                     const dataArray = new Uint8Array(bufferLength);
-                    
+
                     // Set a flag to prevent multiple triggers in one frame
                     let blowDetected = false;
 
                     function detectBlow() {
                         if (!isBlowingMode || candlesExtinguished >= totalCandles) {
                             // If blowing is done, stop detecting
-                            if(audioContext && audioContext.state !== 'closed') {
+                            if (audioContext && audioContext.state !== 'closed') {
                                 // audioContext.close(); // Keep open if the user returns to the page
                             }
-                            return; 
+                            return;
                         }
 
                         analyser.getByteFrequencyData(dataArray);
                         let sum = 0;
                         // Focus on lower frequencies for breath sounds
-                        for(let i = 0; i < bufferLength; i++) {
+                        for (let i = 0; i < bufferLength; i++) {
                             sum += dataArray[i];
                         }
                         let average = sum / bufferLength;
 
                         // NEW SENSITIVITY: 25 is a light blow threshold
-                        if (average > 25 && !blowDetected) { 
+                        if (average > 25 && !blowDetected) {
                             blowDetected = true; // Set flag
                             console.log(`Blow detected! Average volume: ${average}`);
-                            
+
                             // *** NEW LOGIC: Extinguish all candles at once ***
                             extinguishAllCandles();
-                            
+
                             // Delay the reset of the flag to prevent immediate re-trigger from the same blow
                             setTimeout(() => {
                                 blowDetected = false;
@@ -1206,7 +1308,7 @@
 
                     detectBlow();
                 })
-                .catch(function(err) {
+                .catch(function (err) {
                     console.log('Mic access denied or error: ' + err);
                     // If mic access is denied, hide the instruction and rely only on tap
                     document.getElementById('blow-instruction').innerHTML = `
@@ -1215,13 +1317,13 @@
                     `;
                 });
         }
-        
+
         // NEW FUNCTION: Extinguishes all remaining candles
         function extinguishAllCandles() {
             const candles = document.querySelectorAll('.candle:not(.extinguished)');
             if (candles.length > 0) {
                 haptic([10, 10, 10, 10, 10]); // Haptic feedback for mass extinction
-                
+
                 // Use a loop to extinguish them one by one with a small visual delay
                 candles.forEach((candle, index) => {
                     setTimeout(() => {
@@ -1230,11 +1332,11 @@
                 });
             }
         }
-        
+
         // NEW FUNCTION: Handles the animation for a single candle
         function extinguishSingleCandle(candleElement) {
             if (candleElement.classList.contains('extinguished')) return;
-            
+
             candleElement.classList.add('extinguished'); // Mark as done
 
             const flame = candleElement.querySelector('.flame');
@@ -1247,10 +1349,10 @@
                 const smoke = document.createElement('div');
                 smoke.className = 'smoke';
                 candleElement.appendChild(smoke);
-                
+
                 // 3. Increment Count
                 candlesExtinguished++;
-                
+
                 // 4. Check if all done
                 if (candlesExtinguished >= totalCandles) {
                     allCandlesExtinguished();
@@ -1266,13 +1368,13 @@
 
             wishText.textContent = "🎉 เย้! สุขสันต์วันเกิดนะ 🎉";
             blowInstruction.style.display = 'none';
-            
+
             nextBtn.classList.remove('hidden');
             nextBtn.classList.remove('opacity-0', 'pointer-events-none');
-            
+
             createConfetti();
             haptic([100, 50, 100, 50, 200]);
-            
+
             // Close mic usage after done
             if (microphone) {
                 microphone.mediaStream.getTracks().forEach(track => track.stop());
@@ -1285,6 +1387,13 @@
         function initPuzzle() {
             const board = document.getElementById('puzzle-board');
             board.innerHTML = '';
+            // MODIFIED: Reset style when re-initializing
+            board.style.gap = '2px';
+            board.style.pointerEvents = 'auto';
+            // NEW: Reset dimensions to original when restarting
+            board.style.width = '315px';
+            board.style.height = '315px';
+
             puzzleArr = [0, 1, 2, 3, 4, 5, 6, 7, 8];
             // Shuffle array (Fisher-Yates)
             for (let i = puzzleArr.length - 1; i > 0; i--) {
@@ -1296,11 +1405,11 @@
                 const piece = document.createElement('div');
                 piece.className = 'puzzle-piece';
                 piece.draggable = true;
-                piece.dataset.index = index;   // The current position in the array (0-8) - not strictly needed for swap logic but useful for debugging
-                piece.dataset.correct = val;   // The correct value (0-8) that should be at this index
+                piece.dataset.index = index; // The current position in the array (0-8) - not strictly needed for swap logic but useful for debugging
+                piece.dataset.correct = val; // The correct value (0-8) that should be at this index
 
                 const row = Math.floor(val / 3); // row for background position
-                const col = val % 3;             // column for background position
+                const col = val % 3; // column for background position
 
                 // Set the correct background slice
                 piece.style.backgroundImage = `url(${PUZZLE_IMAGE})`;
@@ -1443,8 +1552,6 @@
             dragged.style.transform = '';
 
             if (target) {
-                // *** Use setTimeout to allow the CSS transition (0.2s) to finish
-                // setTimeout(() => {
                 // 1. Swap the correct and background properties
                 const tempCorrect = target.dataset.correct;
                 const tempStyle = target.style.backgroundPosition;
@@ -1457,7 +1564,6 @@
 
                 // 2. Check the puzzle status after the visual swap
                 checkPuzzle();
-                // }, 100); // 200ms matches the CSS transition time (.puzzle-piece transition: transform 0.2s)
 
                 // Remove 'over' class after successful drop/swap
                 target.classList.remove('over');
@@ -1473,7 +1579,9 @@
         // --- Puzzle Check Logic ---
         function checkPuzzle() {
             const pieces = document.querySelectorAll('.puzzle-piece');
+            const board = document.getElementById('puzzle-board');
             let isSolved = true;
+
             pieces.forEach((piece, index) => {
                 // The puzzle is solved if the piece at index 'i' has the correct value 'i'
                 if (parseInt(piece.dataset.correct) !== index) {
@@ -1487,6 +1595,18 @@
             if (isSolved) {
                 successMsg.classList.remove('hidden');
                 nextBtn.classList.remove('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
+
+                // MODIFIED: เมื่อแก้ปริศนาสำเร็จ ให้รวมชิ้นส่วนเป็นภาพเดียว
+                board.style.gap = '0px'; // ลบช่องว่างระหว่างชิ้นส่วน
+                board.style.pointerEvents = 'none'; // ปิดการลาก (ปิด touch/mouse interaction ทั้งกระดาน)
+
+                // NEW: ปรับขนาด container ให้พอดีกับ content (300px + 10px border = 310px) เพื่อไม่ให้เห็นพื้นหลัง
+                board.style.width = '310px';
+                board.style.height = '310px';
+
+                pieces.forEach(piece => {
+                    piece.style.border = 'none'; // ลบขอบขาวของแต่ละชิ้น
+                });
 
                 // Trigger confetti immediately if solved
                 haptic([50, 30, 80, 30, 120, 50, 200]);
@@ -1525,13 +1645,20 @@
             })();
         }
 
-        // --- Envelope Logic ---
+        // --- UPDATED: Envelope Logic ---
         function openEnvelope() {
             const envelope = document.getElementById('envelope');
+            const tapText = document.getElementById('tapEnvelope');
             if (!envelope.classList.contains('open')) {
                 // NEW: Haptic Open
                 haptic([30, 40, 30, 40, 50]);
                 envelope.classList.add('open');
+                tapText.style.display = "none";
+                // *** NEW: ออกจากโหมดเต็มจอหลังจากเปิดซองแล้ว ***
+                // หน่วงเวลา 1.5 วินาทีเพื่อให้ผู้ใช้เห็นข้อความ
+                setTimeout(() => {
+                    // exitFullscreen();
+                }, 1500);
             }
         }
 
