@@ -8,8 +8,26 @@
     <link rel="icon" type="image/x-icon"
         href="https://icons.iconarchive.com/icons/google/noto-emoji-activities/256/52707-party-popper-icon.png">
 
+    <!-- Preconnect to speed up connection to external resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Prompt', 'sans-serif'],
+                        cursive: ['Sacramento', 'cursive'],
+                        fun: ['Ribeye', 'cursive'],
+                    }
+                }
+            }
+        }
+    </script>
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -21,49 +39,71 @@
 
 
     <style>
+        /* --- Loading Screen Styles --- */
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #fce7f3;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease-out, visibility 0.5s;
+        }
+
+        .loader {
+            border: 5px solid #fff;
+            border-top: 5px solid #db2777;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         body {
             font-family: 'Prompt', sans-serif;
             background-color: #fce7f3;
             overflow-x: hidden;
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
-            /* Use dynamic viewport height for better mobile fullscreen adjustment */
             height: 100vh;
             height: 100dvh;
-            /* Add transition for smooth dimming effect */
             transition: background-color 1.5s ease-in-out;
         }
 
         /* --- Dim Background Mode --- */
         body.dim-background {
             background-color: #2b1621;
-            /* Dark pinkish-brown (Cozy dark) */
         }
-
-        /* Adjust text visibility in dim mode */
+        
         body.dim-background h2 {
             color: #ffb7b2;
             text-shadow: 0 0 15px rgba(255, 100, 100, 0.5);
             transition: color 1s;
         }
-
+        
         body.dim-background p#cake-instruction {
             color: #d1d5db;
             transition: color 1s;
         }
-
+        
         body.dim-background #wish-text {
             color: #fff;
             text-shadow: 0 0 10px #ff69b4;
         }
 
-        .title-font {
-            font-family: 'Sacramento', cursive;
-        }
-
-        .font-family-Ribeye {
-            font-family: 'Ribeye', cursive;
-        }
+        .title-font { font-family: 'Sacramento', cursive; }
+        .font-family-Ribeye { font-family: 'Ribeye', cursive; }
 
         /* --- Transitions --- */
         .page {
@@ -83,7 +123,6 @@
             opacity: 1;
             z-index: 10;
         }
-
 
         /* --- Numpad Heart Styles --- */
         .heart-btn {
@@ -121,15 +160,6 @@
             box-shadow: 0 3px 0 #db2777, 0 6px 10px rgba(0, 0, 0, 0.25);
         }
 
-        .heart-btn.span-2 {
-            clip-path: none;
-            border-radius: 32px;
-            width: unset;
-            height: unset;
-            padding: 0.5rem 0;
-        }
-
-
         .numpad-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -142,18 +172,14 @@
 
         /* --- Cake CSS --- */
         :root {
-            /* Updated Palette for Beautiful Cake */
             --cake-body: #5D4037;
-            /* Dark Chocolate */
             --cake-shadow: #3E2723;
             --icing-main: #F48FB1;
-            /* Strawberry Pink */
             --icing-light: #F8BBD0;
             --plate-color: #FFFFFF;
         }
 
         .food-coloring-chocolate {
-            /* Gradient for 3D cylinder effect */
             background: linear-gradient(90deg, var(--cake-body) 0%, #8D6E63 50%, var(--cake-body) 100%);
             box-shadow:
                 0 2px 0px var(--cake-shadow),
@@ -179,14 +205,12 @@
             height: 250px;
             cursor: pointer;
             margin-top: -20px;
-            /* Pull slightly up overall */
         }
 
         .cake-container .cake {
             position: absolute;
             width: 250px;
             height: 200px;
-            /* CHANGED: Moved from 80% to 58% to lift the cake up */
             top: 60%;
             left: 50%;
             transform-style: preserve-3d;
@@ -201,7 +225,6 @@
             left: -10px;
             background-color: var(--plate-color);
             border-radius: 50%;
-            /* Realistic Plate Shadow & Rim */
             box-shadow:
                 0 4px 0 #E0E0E0,
                 0 6px 0 #BDBDBD,
@@ -211,9 +234,7 @@
             z-index: 0;
         }
 
-        .cake>* {
-            position: absolute;
-        }
+        .cake>* { position: absolute; }
 
         .layer {
             position: absolute;
@@ -223,20 +244,9 @@
             border-radius: 50%;
         }
 
-        .layer-top {
-            top: 0px;
-            transform: translateZ(60px);
-        }
-
-        .layer-middle {
-            top: 33px;
-            transform: translateZ(30px);
-        }
-
-        .layer-bottom {
-            top: 66px;
-            transform: translateZ(0px);
-        }
+        .layer-top { top: 0px; transform: translateZ(60px); }
+        .layer-middle { top: 33px; transform: translateZ(30px); }
+        .layer-bottom { top: 66px; transform: translateZ(0px); }
 
         .icing {
             top: 2px;
@@ -247,7 +257,6 @@
             border-radius: 50%;
             transform: translateZ(65px);
             z-index: 2;
-            /* Sprinkles Pattern */
             background-image:
                 radial-gradient(circle, #FFEB3B 2px, transparent 2.5px),
                 radial-gradient(circle, #4FC3F7 2px, transparent 2.5px),
@@ -265,7 +274,6 @@
             bottom: 6px;
             left: 5px;
             background-color: var(--icing-light);
-            /* Soft highlight */
             box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.5);
             border-radius: 50%;
             z-index: 1;
@@ -280,32 +288,12 @@
             background-color: var(--icing-main);
             transform: translateZ(60px);
             z-index: 3;
-            /* Add shadow to drips for realism */
             box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
         }
 
-        .drip1 {
-            top: 53px;
-            left: 5px;
-            transform: skewY(15deg) translateZ(60px);
-            height: 48px;
-            width: 40px;
-        }
-
-        .drip2 {
-            top: 69px;
-            left: 181px;
-            transform: skewY(-15deg) translateZ(60px);
-        }
-
-        .drip3 {
-            top: 54px;
-            left: 90px;
-            width: 80px;
-            border-bottom-left-radius: 40px;
-            border-bottom-right-radius: 40px;
-            transform: translateZ(60px);
-        }
+        .drip1 { top: 53px; left: 5px; transform: skewY(15deg) translateZ(60px); height: 48px; width: 40px; }
+        .drip2 { top: 69px; left: 181px; transform: skewY(-15deg) translateZ(60px); }
+        .drip3 { top: 54px; left: 90px; width: 80px; border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; transform: translateZ(60px); }
 
         .candle {
             background: repeating-linear-gradient(45deg,
@@ -337,10 +325,8 @@
             filter: none;
         }
 
-        /* --- UPDATED FLAME (More Realistic & 3D) --- */
         .flame {
             position: absolute;
-            /* Gradient for 3D hot core look */
             background: radial-gradient(ellipse at bottom, #ffffd1 0%, #fff700 30%, #ff8800 60%, #ff4500 100%);
             width: 14px;
             height: 34px;
@@ -349,8 +335,7 @@
             left: 50%;
             margin-left: -7px;
             z-index: 10;
-            /* Intense glow */
-            box-shadow:
+            box-shadow: 
                 0 0 10px 2px rgba(255, 220, 0, 0.5),
                 0 0 20px 5px rgba(255, 100, 0, 0.3),
                 0 0 40px 10px rgba(255, 50, 0, 0.1);
@@ -361,45 +346,11 @@
         }
 
         @keyframes flicker {
-            0% {
-                transform: skewX(2deg) scaleY(1);
-                box-shadow:
-                    0 0 10px 2px rgba(255, 220, 0, 0.5),
-                    0 0 20px 5px rgba(255, 100, 0, 0.3);
-                opacity: 1;
-            }
-
-            25% {
-                transform: skewX(-2deg) scaleY(1.05);
-                box-shadow:
-                    0 0 12px 3px rgba(255, 220, 0, 0.6),
-                    0 0 25px 6px rgba(255, 100, 0, 0.4);
-                opacity: 0.95;
-            }
-
-            50% {
-                transform: skewX(3deg) scaleY(0.95);
-                box-shadow:
-                    0 0 9px 2px rgba(255, 220, 0, 0.5),
-                    0 0 18px 4px rgba(255, 100, 0, 0.3);
-                opacity: 1;
-            }
-
-            75% {
-                transform: skewX(-1deg) scaleY(1.02);
-                box-shadow:
-                    0 0 13px 3px rgba(255, 220, 0, 0.6),
-                    0 0 22px 5px rgba(255, 100, 0, 0.4);
-                opacity: 0.9;
-            }
-
-            100% {
-                transform: skewX(2deg) scaleY(1);
-                box-shadow:
-                    0 0 10px 2px rgba(255, 220, 0, 0.5),
-                    0 0 20px 5px rgba(255, 100, 0, 0.3);
-                opacity: 1;
-            }
+            0% { transform: skewX(2deg) scaleY(1); opacity: 1; }
+            25% { transform: skewX(-2deg) scaleY(1.05); opacity: 0.95; }
+            50% { transform: skewX(3deg) scaleY(0.95); opacity: 1; }
+            75% { transform: skewX(-1deg) scaleY(1.02); opacity: 0.9; }
+            100% { transform: skewX(2deg) scaleY(1); opacity: 1; }
         }
 
         .smoke {
@@ -417,207 +368,60 @@
         }
 
         @keyframes smoke-rise {
-            0% {
-                transform: translateY(0) scale(1);
-                opacity: 0.6;
-            }
-
-            30% {
-                opacity: 0.4;
-            }
-
-            100% {
-                transform: translateY(-50px) scale(4);
-                opacity: 0;
-            }
+            0% { transform: translateY(0) scale(1); opacity: 0.6; }
+            30% { opacity: 0.4; }
+            100% { transform: translateY(-50px) scale(4); opacity: 0; }
         }
 
-        /* --- NEW Cartoon Blowing Character (Cuter Bear) --- */
+        /* --- Cartoon Bear --- */
         #cartoon-blower {
             position: fixed;
             bottom: -400px;
-            /* Start hidden deeper */
             left: 50%;
             transform: translateX(-50%);
             width: 320px;
             height: auto;
             z-index: 50;
             transition: bottom 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-            /* Bouncy entrance */
             pointer-events: none;
         }
 
-        #cartoon-blower.active {
-            bottom: -20px;
-        }
+        #cartoon-blower.active { bottom: -20px; }
 
-        /* -- Bear SVG Styles -- */
-        .bear-body {
-            transform-origin: center bottom;
-            transition: transform 0.4s ease-out;
-        }
+        .bear-body { transform-origin: center bottom; transition: transform 0.4s ease-out; }
+        .bear-eye { transform-origin: center; transition: transform 0.1s, opacity 0.1s; }
+        .bear-eye-closed { opacity: 0; transform: scaleY(0); }
+        .bear-cheek { opacity: 0.4; transform: scale(1); transform-origin: center; transition: all 0.3s ease; }
+        .bear-mouth-happy { opacity: 1; transition: opacity 0.1s; }
+        .bear-mouth-blow { opacity: 0; transform: scale(0.5); transform-origin: center; transition: opacity 0.1s, transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .bear-arm { transform-origin: 80px 250px; transition: transform 0.5s ease; }
+        .bear-arm.right { transform-origin: 240px 250px; }
+        .wind-group { opacity: 0; transform-origin: center bottom; }
+        .wind-line { stroke: rgba(255, 255, 255, 0.7); stroke-width: 5; stroke-linecap: round; fill: none; stroke-dasharray: 80; stroke-dashoffset: 80; }
 
-        /* Eyes */
-        .bear-eye {
-            transform-origin: center;
-            transition: transform 0.1s, opacity 0.1s;
-        }
+        .inhaling .bear-body { transform: translateY(20px) scale(1.05); }
+        .inhaling .bear-cheek { opacity: 0.8; fill: #ff5252; transform: scale(1.5); }
+        .inhaling .bear-eye { opacity: 0; }
+        .inhaling .bear-eye-closed { opacity: 1; transform: scaleY(1); }
+        .inhaling .bear-mouth-happy { opacity: 0; }
+        .inhaling .bear-mouth-blow { opacity: 1; transform: scale(0.5); }
+        .inhaling .bear-arm { transform: rotate(-10deg) translateY(10px); }
+        .inhaling .bear-arm.right { transform: rotate(10deg) translateY(10px); }
 
-        .bear-eye-closed {
-            opacity: 0;
-            transform: scaleY(0);
-        }
-
-        /* Cheeks */
-        .bear-cheek {
-            opacity: 0.4;
-            transform: scale(1);
-            transform-origin: center;
-            transition: all 0.3s ease;
-        }
-
-        /* Mouth */
-        .bear-mouth-happy {
-            opacity: 1;
-            transition: opacity 0.1s;
-        }
-
-        .bear-mouth-blow {
-            opacity: 0;
-            transform: scale(0.5);
-            transform-origin: center;
-            transition: opacity 0.1s, transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        /* Arms */
-        .bear-arm {
-            transform-origin: 80px 250px;
-            /* Approximate pivot */
-            transition: transform 0.5s ease;
-        }
-
-        .bear-arm.right {
-            transform-origin: 240px 250px;
-        }
-
-        /* Wind */
-        .wind-group {
-            opacity: 0;
-            transform-origin: center bottom;
-        }
-
-        .wind-line {
-            stroke: rgba(255, 255, 255, 0.7);
-            stroke-width: 5;
-            stroke-linecap: round;
-            fill: none;
-            stroke-dasharray: 80;
-            stroke-dashoffset: 80;
-        }
-
-        /* --- ANIMATION STATES --- */
-
-        /* 1. INHALE (Prepare) */
-        .inhaling .bear-body {
-            transform: translateY(20px) scale(1.05);
-            /* Lean back/Inhale */
-        }
-
-        .inhaling .bear-cheek {
-            opacity: 0.8;
-            fill: #ff5252;
-            /* Redder cheeks */
-            transform: scale(1.5);
-            /* Big cheeks */
-        }
-
-        .inhaling .bear-eye {
-            opacity: 0;
-            /* Hide open eyes */
-        }
-
-        .inhaling .bear-eye-closed {
-            opacity: 1;
-            /* Show closed >_< eyes */
-            transform: scaleY(1);
-        }
-
-        .inhaling .bear-mouth-happy {
-            opacity: 0;
-        }
-
-        .inhaling .bear-mouth-blow {
-            opacity: 1;
-            transform: scale(0.5);
-            /* Closed puckered mouth holding breath */
-        }
-
-        .inhaling .bear-arm {
-            transform: rotate(-10deg) translateY(10px);
-        }
-
-        .inhaling .bear-arm.right {
-            transform: rotate(10deg) translateY(10px);
-        }
-
-        /* 2. BLOW (Action) */
-        .blowing .bear-body {
-            transform: translateY(-15px) scale(0.98);
-            /* Lean forward */
-        }
-
-        .blowing .bear-cheek {
-            opacity: 0.3;
-            transform: scale(0.8);
-            /* Cheeks collapse */
-        }
-
-        .blowing .bear-eye {
-            opacity: 1;
-        }
-
-        /* Eyes open wide */
-        .blowing .bear-eye-closed {
-            opacity: 0;
-        }
-
-        .blowing .bear-mouth-happy {
-            opacity: 0;
-        }
-
-        .blowing .bear-mouth-blow {
-            opacity: 1;
-            transform: scale(1.0);
-            /* Tight small pucker, NOT wide open */
-        }
-
-        /* Wind Animation Trigger */
-        .blowing .wind-group {
-            opacity: 1;
-        }
-
-        .blowing .wind-line {
-            animation: strongWind 0.4s ease-out forwards;
-        }
+        .blowing .bear-body { transform: translateY(-15px) scale(0.98); }
+        .blowing .bear-cheek { opacity: 0.3; transform: scale(0.8); }
+        .blowing .bear-eye { opacity: 1; }
+        .blowing .bear-eye-closed { opacity: 0; }
+        .blowing .bear-mouth-happy { opacity: 0; }
+        .blowing .bear-mouth-blow { opacity: 1; transform: scale(1.0); }
+        .blowing .wind-group { opacity: 1; }
+        .blowing .wind-line { animation: strongWind 0.4s ease-out forwards; }
 
         @keyframes strongWind {
-            0% {
-                stroke-dashoffset: 80;
-                transform: translateY(20px) scale(0.5);
-                opacity: 0;
-            }
-
-            10% {
-                opacity: 1;
-            }
-
-            100% {
-                stroke-dashoffset: -100;
-                transform: translateY(-200px) scale(1.2);
-                opacity: 0;
-            }
+            0% { stroke-dashoffset: 80; transform: translateY(20px) scale(0.5); opacity: 0; }
+            10% { opacity: 1; }
+            100% { stroke-dashoffset: -100; transform: translateY(-200px) scale(1.2); opacity: 0; }
         }
-
 
         /* --- Puzzle Styles --- */
         .puzzle-container {
@@ -643,15 +447,8 @@
             transition: transform 0s ease-out, opacity 0.1s, border 0.5s ease;
         }
 
-        .puzzle-piece.dragging {
-            opacity: 0.8;
-            border: 2px solid #db2777;
-            z-index: 50;
-        }
-
-        .puzzle-piece.over {
-            border: 2px dashed #db2777;
-        }
+        .puzzle-piece.dragging { opacity: 0.8; border: 2px solid #db2777; z-index: 50; }
+        .puzzle-piece.over { border: 2px dashed #db2777; }
 
         /* --- Envelope & Card --- */
         .envelope-wrapper {
@@ -666,197 +463,91 @@
             perspective: 1000px;
         }
 
-        .envelope {
-            width: 300px;
-            height: 240px;
-            position: relative;
-            transform-style: preserve-3d;
-        }
-
+        .envelope { width: 300px; height: 240px; position: relative; transform-style: preserve-3d; }
         .envelope-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
+            position: absolute; width: 100%; height: 100%;
             background: linear-gradient(135deg, #cf5959 0%, #c44343 100%);
-            border-radius: 3px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-            z-index: 0;
+            border-radius: 3px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); z-index: 0;
         }
-
         .envelope-left {
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            width: 0;
-            height: 0;
-            border-bottom: 240px solid #fc7777;
-            border-right: 300px solid transparent;
-            z-index: 2;
-            filter: brightness(0.75);
+            position: absolute; left: 0; bottom: 0; width: 0; height: 0;
+            border-bottom: 240px solid #fc7777; border-right: 300px solid transparent;
+            z-index: 2; filter: brightness(0.75);
         }
-
         .envelope-right {
-            position: absolute;
-            right: 0;
-            bottom: 0;
-            width: 0;
-            height: 0;
-            border-bottom: 240px solid #d35656;
-            border-left: 300px solid transparent;
-            z-index: 3;
-            filter: brightness(0.95);
+            position: absolute; right: 0; bottom: 0; width: 0; height: 0;
+            border-bottom: 240px solid #d35656; border-left: 300px solid transparent;
+            z-index: 3; filter: brightness(0.95);
         }
-
         .envelope-bottom {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 140px;
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 140px;
             background: linear-gradient(to bottom, #ec7979, #e26262);
-            clip-path: polygon(0 100%, 50% 0, 100% 100%);
-            z-index: 4;
+            clip-path: polygon(0 100%, 50% 0, 100% 100%); z-index: 4;
         }
-
         .envelope-flap {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 140px;
+            position: absolute; top: 0; left: 0; width: 100%; height: 140px;
             background: linear-gradient(to bottom, rgb(206, 67, 67) 0%, #dd5555 50%, #dd6565 100%);
             clip-path: polygon(0 0, 50% 100%, 100% 0);
-            transform-origin: 50% 0%;
-            transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
-            z-index: 5;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            border-radius: 3px 3px 0 0;
+            transform-origin: 50% 0%; transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+            z-index: 5; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); border-radius: 3px 3px 0 0;
         }
-
         .envelope-flap::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 50%, rgba(0, 0, 0, 0.1) 100%);
-            clip-path: polygon(0 0, 50% 100%, 100% 0);
-            z-index: 1;
+            clip-path: polygon(0 0, 50% 100%, 100% 0); z-index: 1;
         }
 
         .card {
-            position: absolute;
-            width: 270px;
-            height: 220px;
+            position: absolute; width: 270px; height: 220px;
             background: linear-gradient(to bottom, #ffffff 0%, #fef3f4 100%);
-            left: 15px;
-            bottom: 20px;
-            padding: 25px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-            border-radius: 4px;
-            z-index: 2;
-            /* REMOVED: transition property here, handled by animation on .open */
-            transform: translateY(10px);
-            border: 1px solid #fecdd3;
+            left: 15px; bottom: 20px; padding: 25px; text-align: center;
+            display: flex; flex-direction: column; justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); border-radius: 4px;
+            z-index: 2; transform: translateY(10px); border: 1px solid #fecdd3;
         }
-
         .card::before {
-            content: '💌';
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 20px;
-            opacity: 0.3;
+            content: '💌'; position: absolute; top: 10px; right: 10px; font-size: 20px; opacity: 0.3;
         }
 
         .envelope.open .envelope-flap {
-            position: absolute;
-            transform: rotateX(-180deg);
+            position: absolute; transform: rotateX(-180deg);
             animation: flapZIndex 0s 0.2s forwards;
         }
+        @keyframes flapZIndex { to { z-index: 1; } }
 
-        @keyframes flapZIndex {
-            to {
-                z-index: 1;
-            }
-        }
-
-        /* --- UPDATED CARD ANIMATION --- */
-
-        /* Keyframes for Desktop/Standard: Slide Up -> Pop Forward -> Zoom Center */
         @keyframes cardPop {
-            0% {
-                transform: translateY(10px) scale(1) translateZ(0);
-                z-index: 2;
-            }
-
-            40% {
-                /* Step 1: Slide ALL the way up to clear the envelope pocket */
-                transform: translateY(-220px) scale(1) translateZ(0);
-                z-index: 2;
-            }
-
-            50% {
-                /* Step 1.5: Switch Z-index to be visually in front */
-                z-index: 20;
-            }
-
-            100% {
-                /* Step 2: Move down slightly to center, Zoom In, and translateZ to pop 3D */
-                /* translateY value adjusts the vertical center position relative to envelope */
-                transform: translateY(-140px) scale(1.3) translateZ(100px);
-                z-index: 20;
-                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-                /* Stronger shadow */
-            }
+            0% { transform: translateY(10px) scale(1) translateZ(0); z-index: 2; }
+            40% { transform: translateY(-220px) scale(1) translateZ(0); z-index: 2; }
+            50% { z-index: 20; }
+            100% { transform: translateY(-140px) scale(1.3) translateZ(100px); z-index: 20; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
         }
 
-        /* Keyframes for Mobile: Less Zoom to prevent overflow */
         @keyframes cardPopMobile {
-            0% {
-                transform: translateY(10px) scale(1) translateZ(0);
-                z-index: 2;
-            }
-
-            40% {
-                transform: translateY(-220px) scale(1) translateZ(0);
-                z-index: 2;
-            }
-
-            50% {
-                z-index: 20;
-            }
-
-            100% {
-                /* Mobile: Scale only 1.1x to fit width */
-                transform: translateY(-140px) scale(1.1) translateZ(100px);
-                z-index: 20;
-                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-            }
+            0% { transform: translateY(10px) scale(1) translateZ(0); z-index: 2; }
+            40% { transform: translateY(-220px) scale(1) translateZ(0); z-index: 2; }
+            50% { z-index: 20; }
+            100% { transform: translateY(-140px) scale(1.1) translateZ(100px); z-index: 20; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
         }
 
-        .envelope.open .card {
-            /* Apply animation when open */
-            animation: cardPop 1.5s cubic-bezier(0.5, 0, 0.5, 1) 0.8s forwards;
-        }
+        .envelope.open .card { animation: cardPop 1.5s cubic-bezier(0.5, 0, 0.5, 1) 0.8s forwards; }
 
-        /* Responsive override for small screens */
         @media (max-width: 480px) {
-            .envelope.open .card {
-                animation: cardPopMobile 1.5s cubic-bezier(0.5, 0, 0.5, 1) 0.8s forwards;
-            }
+            .envelope.open .card { animation: cardPopMobile 1.5s cubic-bezier(0.5, 0, 0.5, 1) 0.8s forwards; }
         }
+
     </style>
 </head>
 
 <body>
+    
+    <!-- LOADING SCREEN OVERLAY -->
+    <div id="loading-overlay">
+        <div class="loader"></div>
+        <p class="text-pink-600 font-bold animate-pulse">กำลังเตรียมของขวัญ...</p>
+        <p id="loading-text" class="text-gray-500 text-xs mt-2">Loading...</p>
+    </div>
 
-    <div id="app" class="w-full min-h-screen flex flex-col items-center justify-center p-6 pt-6">
+    <div id="app" class="w-full min-h-screen flex flex-col items-center justify-center p-6 pt-6 opacity-0 transition-opacity duration-500">
 
         <!-- Page 1: Landing Page -->
         <div id="page-1" class="page active flex-col items-center justify-center text-center">
@@ -1080,12 +771,13 @@
     </div>
 
     <!-- Main Background Music (Happy/Upbeat) -->
-    <audio id="bg-music" loop>
+    <!-- Added preload="auto" to ensure it's loaded before interaction if possible -->
+    <audio id="bg-music" loop preload="auto">
         <source src="https://cdn.pixabay.com/audio/2025/04/04/audio_2c2635b316.mp3" type="audio/mpeg">
     </audio>
 
     <!-- Romantic/Acoustic Music (For Gallery onwards) -->
-    <audio id="bg-music-romantic" loop>
+    <audio id="bg-music-romantic" loop preload="auto">
         <source src="https://cdn.pixabay.com/audio/2025/06/10/audio_581485d4c9.mp3" type="audio/mpeg">
     </audio>
 
@@ -1096,7 +788,7 @@
         const totalCandles = 5;
         let candlesExtinguished = 0;
         let isBlowingMode = false;
-
+        
         // Music State
         let currentAudioId = 'bg-music'; // Tracks which audio should be playing
         let isPlayingManually = false;
@@ -1120,10 +812,6 @@
             {
                 title: 'ทะเล',
                 image: 'https://raw.githubusercontent.com/npss-93/birthday/main/images/Sea.jpg'
-            },
-            {
-                title: 'เชียงคาน',
-                image: 'https://raw.githubusercontent.com/npss-93/birthday/main/images/ChiangKhan.jpg'
             },
             {
                 title: 'เชียงใหม่',
@@ -1170,7 +858,49 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', (event) => {
+        // --- OPTIMIZATION: Preload Assets Logic ---
+        async function preloadAllAssets() {
+            const loadingText = document.getElementById('loading-text');
+            const imagesToLoad = [...gallery.map(i => i.image), PUZZLE_IMAGE];
+            const totalAssets = imagesToLoad.length;
+            let loadedCount = 0;
+
+            const updateProgress = () => {
+                loadedCount++;
+                const percent = Math.floor((loadedCount / totalAssets) * 100);
+                loadingText.innerText = `Preparing Memories... ${percent}%`;
+            };
+
+            const imagePromises = imagesToLoad.map(src => {
+                return new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.src = src;
+                    img.onload = () => { updateProgress(); resolve(); };
+                    img.onerror = () => { updateProgress(); resolve(); }; // Proceed even if error
+                });
+            });
+
+            // Wait for all images
+            await Promise.all(imagePromises);
+            
+            // Wait a moment for UI
+            return new Promise(resolve => setTimeout(resolve, 500));
+        }
+
+        // --- Start App ---
+        window.addEventListener('load', async () => {
+            await preloadAllAssets();
+
+            const loader = document.getElementById('loading-overlay');
+            const app = document.getElementById('app');
+            
+            // Hide Loader
+            loader.style.opacity = '0';
+            loader.style.visibility = 'hidden';
+            
+            // Show App
+            app.style.opacity = '1';
+            
             renderGallery();
             setupNumpad();
             updateBirthdateDisplay();
@@ -1178,19 +908,13 @@
 
         // --- UPDATED: Haptic Feedback Utility (Crisp Click) ---
         function haptic(pattern) {
-            // Removed visual shake animation
-
-            // 1. Audio Click (Simulate Taptic Engine)
             playHapticClick();
-
-            // 2. Native Vibrate (Android)
             if ('vibrate' in navigator) {
                 navigator.vibrate(pattern);
             }
         }
 
         function playHapticClick() {
-            // Initialize context on first interaction if needed
             initAudioCtx();
             if (!audioCtx) return;
 
@@ -1201,50 +925,39 @@
             osc.connect(gain);
             gain.connect(audioCtx.destination);
 
-            // UPDATED: Loud and Clear Click
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(200, t); // Higher pitch for clarity (was 150)
+            osc.frequency.setValueAtTime(200, t);
             osc.frequency.exponentialRampToValueAtTime(120, t + 0.05);
 
-            // Harder Attack, Louder Gain
             gain.gain.setValueAtTime(0, t);
-            gain.gain.linearRampToValueAtTime(1.0, t + 0.005); // Max volume 1.0 (was 0.8)
-            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.08); // Longer tail (was 0.04)
+            gain.gain.linearRampToValueAtTime(1.0, t + 0.005);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
 
             osc.start(t);
             osc.stop(t + 0.09);
         }
 
-        // --- NEW: Wind Sound Effect Generator ---
         function playWindSound() {
             initAudioCtx();
             if (!audioCtx) return;
             const t = audioCtx.currentTime;
-
-            // Generate Noise Buffer (2 seconds)
             const bufferSize = audioCtx.sampleRate * 2;
             const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
             const data = buffer.getChannelData(0);
             for (let i = 0; i < bufferSize; i++) {
                 data[i] = Math.random() * 2 - 1;
             }
-
             const noise = audioCtx.createBufferSource();
             noise.buffer = buffer;
-
-            // Lowpass filter to shape noise into "Wind"
             const filter = audioCtx.createBiquadFilter();
             filter.type = 'lowpass';
             filter.frequency.setValueAtTime(100, t);
-            filter.frequency.exponentialRampToValueAtTime(800, t + 0.5); // Whoosh up
-            filter.frequency.exponentialRampToValueAtTime(100, t + 1.5); // Whoosh down
-
+            filter.frequency.exponentialRampToValueAtTime(800, t + 0.5); 
+            filter.frequency.exponentialRampToValueAtTime(100, t + 1.5); 
             const gain = audioCtx.createGain();
             gain.gain.setValueAtTime(0, t);
-            // INCREASED GAIN for louder wind
-            gain.gain.linearRampToValueAtTime(1.0, t + 0.2); // Fade in to 1.0 (was 0.5)
-            gain.gain.linearRampToValueAtTime(0, t + 1.5); // Fade out
-
+            gain.gain.linearRampToValueAtTime(1.0, t + 0.2);
+            gain.gain.linearRampToValueAtTime(0, t + 1.5);
             noise.connect(filter);
             filter.connect(gain);
             gain.connect(audioCtx.destination);
@@ -1257,7 +970,7 @@
                 button.addEventListener('touchstart', (e) => {
                     e.preventDefault();
                     button.classList.add('active-state');
-                    haptic(5); // Ultra short vibrate for tap
+                    haptic(5); 
                     handleNumpadInput(button);
                 }, { passive: false });
 
@@ -1324,6 +1037,7 @@
             display.textContent = formattedDisplay;
         }
 
+        // --- OPTIMIZATION: Lazy Loading Images ---
         function renderGallery() {
             const container = document.getElementById('gallery-grid');
             if (!container) return;
@@ -1335,10 +1049,11 @@
                 if (!item.image) return;
 
                 const rotateClass = rotations[index % rotations.length];
+                // Added loading="lazy" to prevent crashing on iOS
                 const cardHTML = `
                 <div class="bg-white p-4 rounded-xl shadow-lg transform ${rotateClass} hover:rotate-0 transition duration-300 flex flex-col items-center">
                     <div class="w-full aspect-[3/4] overflow-hidden rounded-lg mb-3 bg-gray-100">
-                        <img src="${item.image}" onerror="this.onerror=null; this.src='https://placehold.co/300x400/f06292/ffffff?text=Memory';" class="w-full h-full object-cover">
+                        <img src="${item.image}" loading="lazy" onerror="this.onerror=null; this.src='https://placehold.co/300x400/f06292/ffffff?text=Memory';" class="w-full h-full object-cover">
                     </div>
                     <p class="text-center text-pink-600 font-medium text-sm md:text-base">${item.title}</p>
                 </div>
@@ -1348,7 +1063,6 @@
         }
 
         function pauseMusic() {
-            // Pause ONLY the currently active music
             const audio = document.getElementById(currentAudioId);
             if (audio && !audio.paused) {
                 audio.pause();
@@ -1356,64 +1070,58 @@
         }
 
         function playMusic() {
-            // Play whichever is set as current
             const audio = document.getElementById(currentAudioId);
-
-            // Ensure proper volume
-            if (currentAudioId === 'bg-music-romantic') {
-                audio.volume = 0.2; // Slightly louder for emotional acoustic
+            
+            if(currentAudioId === 'bg-music-romantic') {
+                 audio.volume = 0.2; 
             } else {
-                audio.volume = 0.1;
+                 audio.volume = 0.1;
             }
 
             if (audio.paused) {
                 audio.play().then(() => {
                     isPlayingManually = true;
                 }).catch(e => {
-                    console.error("Audio autoplay blocked or user interaction required:", e);
+                    console.error("Audio autoplay blocked:", e);
                 });
             } else {
                 isPlayingManually = true;
             }
         }
 
-        // --- NEW: Crossfade Logic ---
         function switchMusicToRomantic() {
-            if (currentAudioId === 'bg-music-romantic') return; // Already playing
+            if (currentAudioId === 'bg-music-romantic') return; 
 
             const oldAudio = document.getElementById('bg-music');
             const newAudio = document.getElementById('bg-music-romantic');
 
-            // 1. Prepare new audio
+            // Force load before playing
+            newAudio.load();
             newAudio.currentTime = 0;
             newAudio.volume = 0;
             newAudio.play().catch(e => console.log("New audio play error", e));
 
-            // 2. Crossfade Loop
-            const maxVol = 0.2; // Target volume for romantic song
+            const maxVol = 0.2;
             let volOld = oldAudio.volume;
             let volNew = 0;
 
             const fadeInterval = setInterval(() => {
-                // Fade Out Old
                 if (volOld > 0) {
-                    volOld = Math.max(0, volOld - 0.005); // Slow fade
+                    volOld = Math.max(0, volOld - 0.005);
                     oldAudio.volume = volOld;
                 }
 
-                // Fade In New
                 if (volNew < maxVol) {
                     volNew = Math.min(maxVol, volNew + 0.005);
                     newAudio.volume = volNew;
                 }
 
-                // Stop when done
                 if (volOld === 0 && volNew >= maxVol) {
                     clearInterval(fadeInterval);
                     oldAudio.pause();
-                    currentAudioId = 'bg-music-romantic'; // Update global state
+                    currentAudioId = 'bg-music-romantic';
                 }
-            }, 50); // Update every 50ms
+            }, 50);
         }
 
         document.addEventListener('visibilitychange', () => {
@@ -1435,13 +1143,10 @@
         window.addEventListener('pagehide', pauseMusic);
 
         function goToPage(pageJson) {
-            // Init audio context on navigation actions
             initAudioCtx();
             haptic(15);
-
-            // --- Logic for Music Switch ---
+            
             if (pageJson === 4) {
-                // Switching to Gallery -> Change to Romantic Music
                 switchMusicToRomantic();
             }
 
@@ -1463,16 +1168,15 @@
             if (dateInput.length !== 5 || !dateInput.includes('/')) {
                 err.classList.remove('hidden');
                 err.innerText = "กรุณากรอกวัน/เดือนเกิดให้ครบถ้วน (DD/MM) ก่อนน๊าาา";
-                haptic([10, 10, 10]); // Quick buzz buzz buzz
+                haptic([10, 10, 10]);
                 birthdateInput = "";
                 updateBirthdateDisplay();
                 return;
             }
 
             const userMD = dateInput;
-            if (userMD === TARGET_BIRTHDAY_MD) { // Uncomment for real use
-                //if (true) { // Testing mode: Always allow
-                playMusic(); // Plays the default 'bg-music' initially
+            if (userMD === TARGET_BIRTHDAY_MD) { 
+                playMusic();
                 goToPage(3);
             } else {
                 err.classList.remove('hidden');
@@ -1494,8 +1198,7 @@
         function placeCandle(e) {
             if (currentCandles >= totalCandles) return;
             if (isBlowingMode) return;
-
-            // --- NEW: DIM BACKGROUND ON FIRST CANDLE ---
+            
             if (currentCandles === 0) {
                 document.body.classList.add('dim-background');
             }
@@ -1541,7 +1244,6 @@
             const flame = document.createElement('div');
             flame.className = 'flame';
 
-            // Allow tap to extinguish individual candle
             flame.onclick = (event) => {
                 event.stopPropagation();
                 if (isBlowingMode) extinguishSingleCandle(candle);
@@ -1557,20 +1259,16 @@
             }
         }
 
-        // --- Wishing & Blowing Logic (MODIFIED) ---
-
         function finishWishing() {
             const wishText = document.getElementById('wish-text');
             const confirmBtn = document.getElementById('confirm-wish-btn');
             const blowInstruction = document.getElementById('blow-instruction');
             const blowBtn = document.getElementById('blow-btn');
 
-            // Change UI to Blowing Mode
             wishText.textContent = "🎂 ถึงเวลาเป่าเค้กแล้ว! 🎂";
             confirmBtn.style.display = 'none';
             blowInstruction.classList.remove('hidden');
 
-            // Show the "Tap to Blow" button instead of Mic instruction
             blowBtn.classList.remove('hidden');
 
             isBlowingMode = true;
@@ -1579,40 +1277,35 @@
         function triggerCartoonBlow() {
             if (candlesExtinguished >= totalCandles) return;
 
+            // --- Hide button and instruction immediately ---
+            document.getElementById('blow-btn').style.display = 'none';
+            document.getElementById('blow-instruction').style.display = 'none';
+
             const character = document.getElementById('cartoon-blower');
             const svgContainer = character.querySelector('svg');
 
-            // 1. Show Bear
             character.classList.add('active');
             haptic(5);
 
-            // 2. Inhale State (Wait a beat)
             setTimeout(() => {
-                // Add inhaling class
                 svgContainer.classList.add('inhaling');
             }, 500);
 
-            // 3. Blow State & Extinguish
             setTimeout(() => {
-                // Remove inhale, add blowing
                 svgContainer.classList.remove('inhaling');
                 svgContainer.classList.add('blowing');
-
-                // Play "Whoosh" effect (Wind sound)
                 playWindSound();
-
-                // Extinguish candles
                 extinguishAllCandles();
-
-                // Hide character after a bit
                 setTimeout(() => {
                     character.classList.remove('active');
-                    // Reset animations
                     svgContainer.classList.remove('blowing');
-                    document.getElementById('blow-btn').style.display = 'none';
+                    // Button already hidden, no need to hide here
+                    
+                    // Show next button ONLY after bear is gone
+                    showNextButton();
                 }, 2000);
 
-            }, 1500); // 1.5s total delay (Appear -> Inhale -> Blow)
+            }, 1500);
         }
 
         function extinguishAllCandles() {
@@ -1621,54 +1314,57 @@
                 candles.forEach((candle, index) => {
                     setTimeout(() => {
                         extinguishSingleCandle(candle);
-                    }, index * 100 + 300); // Add a little delay to sync with wind animation
+                    }, index * 100 + 300);
                 });
             }
         }
 
         function extinguishSingleCandle(candleElement) {
             if (candleElement.classList.contains('extinguished')) return;
-
             candleElement.classList.add('extinguished');
-
             haptic(5);
-
             const flame = candleElement.querySelector('.flame');
             if (flame) {
                 flame.style.opacity = '0';
                 setTimeout(() => flame.remove(), 500);
-
                 const smoke = document.createElement('div');
                 smoke.className = 'smoke';
                 candleElement.appendChild(smoke);
-
                 candlesExtinguished++;
-
                 if (candlesExtinguished >= totalCandles) {
                     allCandlesExtinguished();
                 }
             }
         }
 
-        function allCandlesExtinguished() {
+        function showNextButton() {
             const nextBtn = document.getElementById('next-to-gallery-btn');
+            nextBtn.classList.remove('hidden');
+            setTimeout(() => {
+                 nextBtn.classList.remove('opacity-0', 'pointer-events-none');
+            }, 50);
+        }
+
+        function allCandlesExtinguished() {
             const wishText = document.getElementById('wish-text');
             const blowInstruction = document.getElementById('blow-instruction');
-
-            // --- NEW: LIGHTS ON ---
+            
             document.body.classList.remove('dim-background');
 
             wishText.textContent = "🎉 เย้! สุขสันต์วันเกิดนะ 🎉";
             blowInstruction.style.display = 'none';
 
-            nextBtn.classList.remove('hidden');
-            nextBtn.classList.remove('opacity-0', 'pointer-events-none');
-
             createConfetti();
             haptic([50, 50, 50]);
+
+            // Only show button if bear is NOT active (manual mode)
+            // If bear IS active, triggerCartoonBlow will handle showing the button later
+            const bear = document.getElementById('cartoon-blower');
+            if (!bear.classList.contains('active')) {
+                showNextButton();
+            }
         }
 
-        // --- Puzzle Page Logic ---
         function initPuzzle() {
             const board = document.getElementById('puzzle-board');
             board.innerHTML = '';
