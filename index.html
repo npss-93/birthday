@@ -66,8 +66,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         body {
@@ -85,25 +90,30 @@
         body.dim-background {
             background-color: #2b1621;
         }
-        
+
         body.dim-background h2 {
             color: #ffb7b2;
             text-shadow: 0 0 15px rgba(255, 100, 100, 0.5);
             transition: color 1s;
         }
-        
+
         body.dim-background p#cake-instruction {
             color: #d1d5db;
             transition: color 1s;
         }
-        
+
         body.dim-background #wish-text {
             color: #fff;
             text-shadow: 0 0 10px #ff69b4;
         }
 
-        .title-font { font-family: 'Sacramento', cursive; }
-        .font-family-Ribeye { font-family: 'Ribeye', cursive; }
+        .title-font {
+            font-family: 'Sacramento', cursive;
+        }
+
+        .font-family-Ribeye {
+            font-family: 'Ribeye', cursive;
+        }
 
         /* --- Transitions --- */
         .page {
@@ -234,7 +244,9 @@
             z-index: 0;
         }
 
-        .cake>* { position: absolute; }
+        .cake>* {
+            position: absolute;
+        }
 
         .layer {
             position: absolute;
@@ -244,9 +256,20 @@
             border-radius: 50%;
         }
 
-        .layer-top { top: 0px; transform: translateZ(60px); }
-        .layer-middle { top: 33px; transform: translateZ(30px); }
-        .layer-bottom { top: 66px; transform: translateZ(0px); }
+        .layer-top {
+            top: 0px;
+            transform: translateZ(60px);
+        }
+
+        .layer-middle {
+            top: 33px;
+            transform: translateZ(30px);
+        }
+
+        .layer-bottom {
+            top: 66px;
+            transform: translateZ(0px);
+        }
 
         .icing {
             top: 2px;
@@ -291,9 +314,28 @@
             box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
         }
 
-        .drip1 { top: 53px; left: 5px; transform: skewY(15deg) translateZ(60px); height: 48px; width: 40px; }
-        .drip2 { top: 69px; left: 181px; transform: skewY(-15deg) translateZ(60px); }
-        .drip3 { top: 54px; left: 90px; width: 80px; border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; transform: translateZ(60px); }
+        .drip1 {
+            top: 53px;
+            left: 5px;
+            transform: skewY(15deg) translateZ(60px);
+            height: 48px;
+            width: 40px;
+        }
+
+        .drip2 {
+            top: 69px;
+            left: 181px;
+            transform: skewY(-15deg) translateZ(60px);
+        }
+
+        .drip3 {
+            top: 54px;
+            left: 90px;
+            width: 80px;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+            transform: translateZ(60px);
+        }
 
         .candle {
             background: repeating-linear-gradient(45deg,
@@ -325,6 +367,7 @@
             filter: none;
         }
 
+        /* --- FLAME & SPARK EFFECTS (Combined) --- */
         .flame {
             position: absolute;
             background: radial-gradient(ellipse at bottom, #ffffd1 0%, #fff700 30%, #ff8800 60%, #ff4500 100%);
@@ -335,7 +378,7 @@
             left: 50%;
             margin-left: -7px;
             z-index: 10;
-            box-shadow: 
+            box-shadow:
                 0 0 10px 2px rgba(255, 220, 0, 0.5),
                 0 0 20px 5px rgba(255, 100, 0, 0.3),
                 0 0 40px 10px rgba(255, 50, 0, 0.1);
@@ -346,11 +389,58 @@
         }
 
         @keyframes flicker {
-            0% { transform: skewX(2deg) scaleY(1); opacity: 1; }
-            25% { transform: skewX(-2deg) scaleY(1.05); opacity: 0.95; }
-            50% { transform: skewX(3deg) scaleY(0.95); opacity: 1; }
-            75% { transform: skewX(-1deg) scaleY(1.02); opacity: 0.9; }
-            100% { transform: skewX(2deg) scaleY(1); opacity: 1; }
+            0% {
+                transform: skewX(2deg) scaleY(1);
+                opacity: 1;
+            }
+
+            25% {
+                transform: skewX(-2deg) scaleY(1.05);
+                opacity: 0.95;
+            }
+
+            50% {
+                transform: skewX(3deg) scaleY(0.95);
+                opacity: 1;
+            }
+
+            75% {
+                transform: skewX(-1deg) scaleY(1.02);
+                opacity: 0.9;
+            }
+
+            100% {
+                transform: skewX(2deg) scaleY(1);
+                opacity: 1;
+            }
+        }
+
+        .spark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 3px;
+            height: 3px;
+            background-color: #ffd700;
+            /* Gold */
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 19;
+            pointer-events: none;
+            box-shadow: 0 0 3px #fff;
+            opacity: 0;
+        }
+
+        @keyframes fly-spark {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0);
+                opacity: 0;
+            }
         }
 
         .smoke {
@@ -368,9 +458,19 @@
         }
 
         @keyframes smoke-rise {
-            0% { transform: translateY(0) scale(1); opacity: 0.6; }
-            30% { opacity: 0.4; }
-            100% { transform: translateY(-50px) scale(4); opacity: 0; }
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 0.6;
+            }
+
+            30% {
+                opacity: 0.4;
+            }
+
+            100% {
+                transform: translateY(-50px) scale(4);
+                opacity: 0;
+            }
         }
 
         /* --- Cartoon Bear --- */
@@ -386,41 +486,153 @@
             pointer-events: none;
         }
 
-        #cartoon-blower.active { bottom: -20px; }
+        #cartoon-blower.active {
+            bottom: -20px;
+        }
 
-        .bear-body { transform-origin: center bottom; transition: transform 0.4s ease-out; }
-        .bear-eye { transform-origin: center; transition: transform 0.1s, opacity 0.1s; }
-        .bear-eye-closed { opacity: 0; transform: scaleY(0); }
-        .bear-cheek { opacity: 0.4; transform: scale(1); transform-origin: center; transition: all 0.3s ease; }
-        .bear-mouth-happy { opacity: 1; transition: opacity 0.1s; }
-        .bear-mouth-blow { opacity: 0; transform: scale(0.5); transform-origin: center; transition: opacity 0.1s, transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .bear-arm { transform-origin: 80px 250px; transition: transform 0.5s ease; }
-        .bear-arm.right { transform-origin: 240px 250px; }
-        .wind-group { opacity: 0; transform-origin: center bottom; }
-        .wind-line { stroke: rgba(255, 255, 255, 0.7); stroke-width: 5; stroke-linecap: round; fill: none; stroke-dasharray: 80; stroke-dashoffset: 80; }
+        .bear-body {
+            transform-origin: center bottom;
+            transition: transform 0.4s ease-out;
+        }
 
-        .inhaling .bear-body { transform: translateY(20px) scale(1.05); }
-        .inhaling .bear-cheek { opacity: 0.8; fill: #ff5252; transform: scale(1.5); }
-        .inhaling .bear-eye { opacity: 0; }
-        .inhaling .bear-eye-closed { opacity: 1; transform: scaleY(1); }
-        .inhaling .bear-mouth-happy { opacity: 0; }
-        .inhaling .bear-mouth-blow { opacity: 1; transform: scale(0.5); }
-        .inhaling .bear-arm { transform: rotate(-10deg) translateY(10px); }
-        .inhaling .bear-arm.right { transform: rotate(10deg) translateY(10px); }
+        .bear-eye {
+            transform-origin: center;
+            transition: transform 0.1s, opacity 0.1s;
+        }
 
-        .blowing .bear-body { transform: translateY(-15px) scale(0.98); }
-        .blowing .bear-cheek { opacity: 0.3; transform: scale(0.8); }
-        .blowing .bear-eye { opacity: 1; }
-        .blowing .bear-eye-closed { opacity: 0; }
-        .blowing .bear-mouth-happy { opacity: 0; }
-        .blowing .bear-mouth-blow { opacity: 1; transform: scale(1.0); }
-        .blowing .wind-group { opacity: 1; }
-        .blowing .wind-line { animation: strongWind 0.4s ease-out forwards; }
+        .bear-eye-closed {
+            opacity: 0;
+            transform: scaleY(0);
+        }
+
+        .bear-cheek {
+            opacity: 0.4;
+            transform: scale(1);
+            transform-origin: center;
+            transition: all 0.3s ease;
+        }
+
+        .bear-mouth-happy {
+            opacity: 1;
+            transition: opacity 0.1s;
+        }
+
+        .bear-mouth-blow {
+            opacity: 0;
+            transform: scale(0.5);
+            transform-origin: center;
+            transition: opacity 0.1s, transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .bear-arm {
+            transform-origin: 80px 250px;
+            transition: transform 0.5s ease;
+        }
+
+        .bear-arm.right {
+            transform-origin: 240px 250px;
+        }
+
+        .wind-group {
+            opacity: 0;
+            transform-origin: center bottom;
+        }
+
+        .wind-line {
+            stroke: rgba(255, 255, 255, 0.7);
+            stroke-width: 5;
+            stroke-linecap: round;
+            fill: none;
+            stroke-dasharray: 80;
+            stroke-dashoffset: 80;
+        }
+
+        .inhaling .bear-body {
+            transform: translateY(20px) scale(1.05);
+        }
+
+        .inhaling .bear-cheek {
+            opacity: 0.8;
+            fill: #ff5252;
+            transform: scale(1.5);
+        }
+
+        .inhaling .bear-eye {
+            opacity: 0;
+        }
+
+        .inhaling .bear-eye-closed {
+            opacity: 1;
+            transform: scaleY(1);
+        }
+
+        .inhaling .bear-mouth-happy {
+            opacity: 0;
+        }
+
+        .inhaling .bear-mouth-blow {
+            opacity: 1;
+            transform: scale(0.5);
+        }
+
+        .inhaling .bear-arm {
+            transform: rotate(-10deg) translateY(10px);
+        }
+
+        .inhaling .bear-arm.right {
+            transform: rotate(10deg) translateY(10px);
+        }
+
+        .blowing .bear-body {
+            transform: translateY(-15px) scale(0.98);
+        }
+
+        .blowing .bear-cheek {
+            opacity: 0.3;
+            transform: scale(0.8);
+        }
+
+        .blowing .bear-eye {
+            opacity: 1;
+        }
+
+        .blowing .bear-eye-closed {
+            opacity: 0;
+        }
+
+        .blowing .bear-mouth-happy {
+            opacity: 0;
+        }
+
+        .blowing .bear-mouth-blow {
+            opacity: 1;
+            transform: scale(1.0);
+        }
+
+        .blowing .wind-group {
+            opacity: 1;
+        }
+
+        .blowing .wind-line {
+            animation: strongWind 0.4s ease-out forwards;
+        }
 
         @keyframes strongWind {
-            0% { stroke-dashoffset: 80; transform: translateY(20px) scale(0.5); opacity: 0; }
-            10% { opacity: 1; }
-            100% { stroke-dashoffset: -100; transform: translateY(-200px) scale(1.2); opacity: 0; }
+            0% {
+                stroke-dashoffset: 80;
+                transform: translateY(20px) scale(0.5);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            100% {
+                stroke-dashoffset: -100;
+                transform: translateY(-200px) scale(1.2);
+                opacity: 0;
+            }
         }
 
         /* --- Puzzle Styles --- */
@@ -447,8 +659,15 @@
             transition: transform 0s ease-out, opacity 0.1s, border 0.5s ease;
         }
 
-        .puzzle-piece.dragging { opacity: 0.8; border: 2px solid #db2777; z-index: 50; }
-        .puzzle-piece.over { border: 2px dashed #db2777; }
+        .puzzle-piece.dragging {
+            opacity: 0.8;
+            border: 2px solid #db2777;
+            z-index: 50;
+        }
+
+        .puzzle-piece.over {
+            border: 2px dashed #db2777;
+        }
 
         /* --- Envelope & Card --- */
         .envelope-wrapper {
@@ -463,83 +682,183 @@
             perspective: 1000px;
         }
 
-        .envelope { width: 300px; height: 240px; position: relative; transform-style: preserve-3d; }
+        .envelope {
+            width: 300px;
+            height: 240px;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
         .envelope-back {
-            position: absolute; width: 100%; height: 100%;
+            position: absolute;
+            width: 100%;
+            height: 100%;
             background: linear-gradient(135deg, #cf5959 0%, #c44343 100%);
-            border-radius: 3px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); z-index: 0;
+            border-radius: 3px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            z-index: 0;
         }
+
         .envelope-left {
-            position: absolute; left: 0; bottom: 0; width: 0; height: 0;
-            border-bottom: 240px solid #fc7777; border-right: 300px solid transparent;
-            z-index: 2; filter: brightness(0.75);
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 0;
+            border-bottom: 240px solid #fc7777;
+            border-right: 300px solid transparent;
+            z-index: 2;
+            filter: brightness(0.75);
         }
+
         .envelope-right {
-            position: absolute; right: 0; bottom: 0; width: 0; height: 0;
-            border-bottom: 240px solid #d35656; border-left: 300px solid transparent;
-            z-index: 3; filter: brightness(0.95);
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 0;
+            height: 0;
+            border-bottom: 240px solid #d35656;
+            border-left: 300px solid transparent;
+            z-index: 3;
+            filter: brightness(0.95);
         }
+
         .envelope-bottom {
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 140px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 140px;
             background: linear-gradient(to bottom, #ec7979, #e26262);
-            clip-path: polygon(0 100%, 50% 0, 100% 100%); z-index: 4;
+            clip-path: polygon(0 100%, 50% 0, 100% 100%);
+            z-index: 4;
         }
+
         .envelope-flap {
-            position: absolute; top: 0; left: 0; width: 100%; height: 140px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 140px;
             background: linear-gradient(to bottom, rgb(206, 67, 67) 0%, #dd5555 50%, #dd6565 100%);
             clip-path: polygon(0 0, 50% 100%, 100% 0);
-            transform-origin: 50% 0%; transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
-            z-index: 5; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); border-radius: 3px 3px 0 0;
+            transform-origin: 50% 0%;
+            transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+            z-index: 5;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 3px 3px 0 0;
         }
+
         .envelope-flap::after {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 50%, rgba(0, 0, 0, 0.1) 100%);
-            clip-path: polygon(0 0, 50% 100%, 100% 0); z-index: 1;
+            clip-path: polygon(0 0, 50% 100%, 100% 0);
+            z-index: 1;
         }
 
         .card {
-            position: absolute; width: 270px; height: 220px;
+            position: absolute;
+            width: 270px;
+            height: 220px;
             background: linear-gradient(to bottom, #ffffff 0%, #fef3f4 100%);
-            left: 15px; bottom: 20px; padding: 25px; text-align: center;
-            display: flex; flex-direction: column; justify-content: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); border-radius: 4px;
-            z-index: 2; transform: translateY(10px); border: 1px solid #fecdd3;
+            left: 15px;
+            bottom: 20px;
+            padding: 25px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            border-radius: 4px;
+            z-index: 2;
+            transform: translateY(10px);
+            border: 1px solid #fecdd3;
         }
+
         .card::before {
-            content: '💌'; position: absolute; top: 10px; right: 10px; font-size: 20px; opacity: 0.3;
+            content: '💌';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            opacity: 0.3;
         }
 
         .envelope.open .envelope-flap {
-            position: absolute; transform: rotateX(-180deg);
+            position: absolute;
+            transform: rotateX(-180deg);
             animation: flapZIndex 0s 0.2s forwards;
         }
-        @keyframes flapZIndex { to { z-index: 1; } }
+
+        @keyframes flapZIndex {
+            to {
+                z-index: 1;
+            }
+        }
 
         @keyframes cardPop {
-            0% { transform: translateY(10px) scale(1) translateZ(0); z-index: 2; }
-            40% { transform: translateY(-220px) scale(1) translateZ(0); z-index: 2; }
-            50% { z-index: 20; }
-            100% { transform: translateY(-140px) scale(1.3) translateZ(100px); z-index: 20; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+            0% {
+                transform: translateY(10px) scale(1) translateZ(0);
+                z-index: 2;
+            }
+
+            40% {
+                transform: translateY(-220px) scale(1) translateZ(0);
+                z-index: 2;
+            }
+
+            50% {
+                z-index: 20;
+            }
+
+            100% {
+                transform: translateY(-140px) scale(1.3) translateZ(100px);
+                z-index: 20;
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            }
         }
 
         @keyframes cardPopMobile {
-            0% { transform: translateY(10px) scale(1) translateZ(0); z-index: 2; }
-            40% { transform: translateY(-220px) scale(1) translateZ(0); z-index: 2; }
-            50% { z-index: 20; }
-            100% { transform: translateY(-140px) scale(1.1) translateZ(100px); z-index: 20; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+            0% {
+                transform: translateY(10px) scale(1) translateZ(0);
+                z-index: 2;
+            }
+
+            40% {
+                transform: translateY(-220px) scale(1) translateZ(0);
+                z-index: 2;
+            }
+
+            50% {
+                z-index: 20;
+            }
+
+            100% {
+                transform: translateY(-140px) scale(1.1) translateZ(100px);
+                z-index: 20;
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            }
         }
 
-        .envelope.open .card { animation: cardPop 1.5s cubic-bezier(0.5, 0, 0.5, 1) 0.8s forwards; }
+        .envelope.open .card {
+            animation: cardPop 1.5s cubic-bezier(0.5, 0, 0.5, 1) 0.8s forwards;
+        }
 
         @media (max-width: 480px) {
-            .envelope.open .card { animation: cardPopMobile 1.5s cubic-bezier(0.5, 0, 0.5, 1) 0.8s forwards; }
+            .envelope.open .card {
+                animation: cardPopMobile 1.5s cubic-bezier(0.5, 0, 0.5, 1) 0.8s forwards;
+            }
         }
-
     </style>
 </head>
 
 <body>
-    
+
     <!-- LOADING SCREEN OVERLAY -->
     <div id="loading-overlay">
         <div class="loader"></div>
@@ -547,7 +866,8 @@
         <p id="loading-text" class="text-gray-500 text-xs mt-2">Loading...</p>
     </div>
 
-    <div id="app" class="w-full min-h-screen flex flex-col items-center justify-center p-6 pt-6 opacity-0 transition-opacity duration-500">
+    <div id="app"
+        class="w-full min-h-screen flex flex-col items-center justify-center p-6 pt-6 opacity-0 transition-opacity duration-500">
 
         <!-- Page 1: Landing Page -->
         <div id="page-1" class="page active flex-col items-center justify-center text-center">
@@ -618,7 +938,9 @@
             </div>
 
             <!-- Changed mt-20 to mt-8 to bring buttons closer -->
-            <div id="wish-message" class="mt-8 text-center opacity-0 transition-opacity duration-1000 z-10">
+            <!-- Added pointer-events-none to prevent ghost clicks on hidden buttons -->
+            <div id="wish-message"
+                class="mt-8 text-center opacity-0 transition-opacity duration-1000 z-10 pointer-events-none">
                 <p id="wish-text" class="text-2xl text-pink-700 font-bold mb-4">✨ หลับตาอธิษฐานเลย! ✨</p>
 
                 <button id="confirm-wish-btn" onclick="finishWishing()"
@@ -734,7 +1056,7 @@
             <div class="puzzle-container" id="puzzle-board"></div>
             <p id="puzzle-success" class="text-green-500 font-bold mt-4 hidden text-xl">เก่งมาก! 🎉</p>
             <button id="next-to-card-btn" onclick="goToPage(6)"
-                class="mt-6 bg-pink-500 text-white px-6 py-2 rounded-full opacity-50 cursor-not-allowed pointer-events-none transition">
+                class="mt-6 bg-pink-400 text-white px-6 py-2 rounded-full opacity-50 cursor-not-allowed pointer-events-none transition">
                 รับของขวัญชิ้นสุดท้าย <i class="fas fa-gift ml-2"></i>
             </button>
         </div>
@@ -773,12 +1095,14 @@
     <!-- Main Background Music (Happy/Upbeat) -->
     <!-- Added preload="auto" to ensure it's loaded before interaction if possible -->
     <audio id="bg-music" loop preload="auto">
-        <source src="https://cdn.pixabay.com/audio/2025/04/04/audio_2c2635b316.mp3" type="audio/mpeg">
+        <source src="https://raw.githubusercontent.com/npss-93/birthday/main/sound/audio_happy_birthday.mp3"
+            type="audio/mpeg">
     </audio>
 
     <!-- Romantic/Acoustic Music (For Gallery onwards) -->
     <audio id="bg-music-romantic" loop preload="auto">
-        <source src="https://cdn.pixabay.com/audio/2025/06/10/audio_581485d4c9.mp3" type="audio/mpeg">
+        <source src="https://raw.githubusercontent.com/npss-93/birthday/main/sound/audio_romantic.mp3"
+            type="audio/mpeg">
     </audio>
 
     <script>
@@ -788,7 +1112,7 @@
         const totalCandles = 5;
         let candlesExtinguished = 0;
         let isBlowingMode = false;
-        
+
         // Music State
         let currentAudioId = 'bg-music'; // Tracks which audio should be playing
         let isPlayingManually = false;
@@ -799,6 +1123,35 @@
         let touchSrc = null;
         let currentTouchTarget = null;
         let birthdateInput = "";
+
+        // --- DOM Caching Object (OPTIMIZATION #1) ---
+        // เก็บ References ของ Elements ไว้ที่เดียว เพื่อลดการค้นหาใน DOM ซ้ำๆ
+        const UI = {
+            loader: null,
+            loadingText: null,
+            app: null,
+            pages: null, // NodeList
+            birthdateDisplay: null,
+            errorMsg: null,
+            wishMessage: null,
+            cakeInstruction: null,
+            newCake: null,
+            cakeSurface: null,
+            wishText: null,
+            confirmWishBtn: null,
+            blowBtn: null,
+            blowInstruction: null,
+            cartoonBlower: null,
+            nextToGalleryBtn: null,
+            galleryGrid: null,
+            puzzleBoard: null,
+            puzzleSuccess: null,
+            nextToCardBtn: null,
+            envelope: null,
+            tapEnvelope: null,
+            audioHappy: null,
+            audioRomantic: null
+        };
 
         const gallery = [
             {
@@ -858,49 +1211,122 @@
             }
         }
 
-        // --- OPTIMIZATION: Preload Assets Logic ---
+        // --- DOM Initialization Function ---
+        function initDOM() {
+            UI.loader = document.getElementById('loading-overlay');
+            UI.loadingText = document.getElementById('loading-text');
+            UI.app = document.getElementById('app');
+            UI.birthdateDisplay = document.getElementById('birthdate-display');
+            UI.errorMsg = document.getElementById('error-msg');
+            UI.wishMessage = document.getElementById('wish-message');
+            UI.cakeInstruction = document.getElementById('cake-instruction');
+            UI.newCake = document.getElementById('new-cake');
+            UI.cakeSurface = document.getElementById('cake-surface');
+            UI.wishText = document.getElementById('wish-text');
+            UI.confirmWishBtn = document.getElementById('confirm-wish-btn');
+            UI.blowBtn = document.getElementById('blow-btn');
+            UI.blowInstruction = document.getElementById('blow-instruction');
+            UI.cartoonBlower = document.getElementById('cartoon-blower');
+            UI.nextToGalleryBtn = document.getElementById('next-to-gallery-btn');
+            UI.galleryGrid = document.getElementById('gallery-grid');
+            UI.puzzleBoard = document.getElementById('puzzle-board');
+            UI.puzzleSuccess = document.getElementById('puzzle-success');
+            UI.nextToCardBtn = document.getElementById('next-to-card-btn');
+            UI.envelope = document.getElementById('envelope');
+            UI.tapEnvelope = document.getElementById('tapEnvelope');
+            UI.audioHappy = document.getElementById('bg-music');
+            UI.audioRomantic = document.getElementById('bg-music-romantic');
+            UI.pages = document.querySelectorAll('.page');
+        }
+
+        // --- OPTIMIZATION #2: Smart Preloading with Timeout & Error Handling ---
         async function preloadAllAssets() {
-            const loadingText = document.getElementById('loading-text');
             const imagesToLoad = [...gallery.map(i => i.image), PUZZLE_IMAGE];
-            const totalAssets = imagesToLoad.length;
+            const audioUrls = [
+                "https://raw.githubusercontent.com/npss-93/birthday/main/sound/audio_happy_birthday.mp3",
+                "https://raw.githubusercontent.com/npss-93/birthday/main/sound/audio_romantic.mp3"
+            ];
+            const totalAssets = imagesToLoad.length + audioUrls.length;
             let loadedCount = 0;
 
-            const updateProgress = () => {
-                loadedCount++;
-                const percent = Math.floor((loadedCount / totalAssets) * 100);
-                loadingText.innerText = `Preparing Memories... ${percent}%`;
+            // 1. Single Image Loader with Promise that ALWAYS resolves (never rejects)
+            // ช่วยให้ถ้ามีรูปเสีย 1 รูป ระบบจะไม่พัง และโหลดรูปอื่นต่อได้
+            const loadImageSafe = (src) => {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        loadedCount++;
+                        updateProgress(loadedCount, totalAssets);
+                        resolve({ src, status: 'ok' });
+                    };
+                    img.onerror = () => {
+                        console.warn(`Failed to load: ${src}`);
+                        loadedCount++;
+                        updateProgress(loadedCount, totalAssets);
+                        resolve({ src, status: 'error' }); // Resolve anyway
+                    };
+                    img.src = src;
+                });
             };
 
-            const imagePromises = imagesToLoad.map(src => {
-                return new Promise((resolve, reject) => {
-                    const img = new Image();
-                    img.src = src;
-                    img.onload = () => { updateProgress(); resolve(); };
-                    img.onerror = () => { updateProgress(); resolve(); }; // Proceed even if error
+            // 1.1 Audio Loader with Promise
+            const loadAudioSafe = (src) => {
+                return new Promise((resolve) => {
+                    const audio = new Audio();
+                    audio.oncanplaythrough = () => {
+                        loadedCount++;
+                        updateProgress(loadedCount, totalAssets);
+                        resolve({ src, status: 'ok' });
+                    };
+                    audio.onerror = () => {
+                        console.warn(`Failed to load audio: ${src}`);
+                        loadedCount++;
+                        updateProgress(loadedCount, totalAssets);
+                        resolve({ src, status: 'error' });
+                    };
+                    audio.src = src;
+                    audio.load();
                 });
+            };
+
+            const updateProgress = (count, total) => {
+                const percent = Math.floor((count / total) * 100);
+                if (UI.loadingText) UI.loadingText.innerText = `Preparing Memories... ${percent}%`;
+            };
+
+            // 2. Create Loading Promise Array
+            const loadPromises = [
+                ...imagesToLoad.map(src => loadImageSafe(src)),
+                ...audioUrls.map(src => loadAudioSafe(src))
+            ];
+
+            // 3. Create Timeout Promise (Anti-Freeze Protection)
+            // ถ้าโหลดนานเกิน 8 วินาที ให้ตัดจบเลย
+            const timeoutPromise = new Promise((resolve) => {
+                setTimeout(() => {
+                    console.warn("Preloading timed out - Forcing start.");
+                    resolve("timeout");
+                }, 8000); // 8 Seconds timeout
             });
 
-            // Wait for all images
-            await Promise.all(imagePromises);
-            
-            // Wait a moment for UI
+            // 4. Race Condition: Wait for (All Assets Loaded) OR (Timeout)
+            await Promise.race([Promise.all(loadPromises), timeoutPromise]);
+
+            // Give a small buffer for UI smoothness
             return new Promise(resolve => setTimeout(resolve, 500));
         }
 
         // --- Start App ---
         window.addEventListener('load', async () => {
+            initDOM(); // Initialize Cached DOM Elements
+
             await preloadAllAssets();
 
-            const loader = document.getElementById('loading-overlay');
-            const app = document.getElementById('app');
-            
-            // Hide Loader
-            loader.style.opacity = '0';
-            loader.style.visibility = 'hidden';
-            
-            // Show App
-            app.style.opacity = '1';
-            
+            // Use Cached Elements
+            UI.loader.style.opacity = '0';
+            UI.loader.style.visibility = 'hidden';
+            UI.app.style.opacity = '1';
+
             renderGallery();
             setupNumpad();
             updateBirthdateDisplay();
@@ -952,8 +1378,8 @@
             const filter = audioCtx.createBiquadFilter();
             filter.type = 'lowpass';
             filter.frequency.setValueAtTime(100, t);
-            filter.frequency.exponentialRampToValueAtTime(800, t + 0.5); 
-            filter.frequency.exponentialRampToValueAtTime(100, t + 1.5); 
+            filter.frequency.exponentialRampToValueAtTime(800, t + 0.5);
+            filter.frequency.exponentialRampToValueAtTime(100, t + 1.5);
             const gain = audioCtx.createGain();
             gain.gain.setValueAtTime(0, t);
             gain.gain.linearRampToValueAtTime(1.0, t + 0.2);
@@ -970,7 +1396,7 @@
                 button.addEventListener('touchstart', (e) => {
                     e.preventDefault();
                     button.classList.add('active-state');
-                    haptic(5); 
+                    haptic(5);
                     handleNumpadInput(button);
                 }, { passive: false });
 
@@ -988,8 +1414,9 @@
         function handleNumpadInput(button) {
             const value = button.dataset.value;
             const action = button.dataset.action;
-            const err = document.getElementById('error-msg');
-            err.classList.add('hidden');
+            
+            // Use Cached UI
+            UI.errorMsg.classList.add('hidden');
 
             if (value) {
                 if (birthdateInput.length < 5) {
@@ -1015,7 +1442,8 @@
         }
 
         function updateBirthdateDisplay() {
-            const display = document.getElementById('birthdate-display');
+            // Use Cached UI
+            const display = UI.birthdateDisplay;
             let rawInput = birthdateInput;
 
             if (rawInput.length === 0) {
@@ -1039,7 +1467,8 @@
 
         // --- OPTIMIZATION: Lazy Loading Images ---
         function renderGallery() {
-            const container = document.getElementById('gallery-grid');
+            // Use Cached UI
+            const container = UI.galleryGrid;
             if (!container) return;
 
             container.innerHTML = '';
@@ -1049,7 +1478,6 @@
                 if (!item.image) return;
 
                 const rotateClass = rotations[index % rotations.length];
-                // Added loading="lazy" to prevent crashing on iOS
                 const cardHTML = `
                 <div class="bg-white p-4 rounded-xl shadow-lg transform ${rotateClass} hover:rotate-0 transition duration-300 flex flex-col items-center">
                     <div class="w-full aspect-[3/4] overflow-hidden rounded-lg mb-3 bg-gray-100">
@@ -1063,19 +1491,19 @@
         }
 
         function pauseMusic() {
-            const audio = document.getElementById(currentAudioId);
+            const audio = currentAudioId === 'bg-music' ? UI.audioHappy : UI.audioRomantic;
             if (audio && !audio.paused) {
                 audio.pause();
             }
         }
 
         function playMusic() {
-            const audio = document.getElementById(currentAudioId);
-            
-            if(currentAudioId === 'bg-music-romantic') {
-                 audio.volume = 0.2; 
+            const audio = currentAudioId === 'bg-music' ? UI.audioHappy : UI.audioRomantic;
+
+            if (currentAudioId === 'bg-music-romantic') {
+                audio.volume = 0.2;
             } else {
-                 audio.volume = 0.1;
+                audio.volume = 0.1;
             }
 
             if (audio.paused) {
@@ -1090,10 +1518,10 @@
         }
 
         function switchMusicToRomantic() {
-            if (currentAudioId === 'bg-music-romantic') return; 
+            if (currentAudioId === 'bg-music-romantic') return;
 
-            const oldAudio = document.getElementById('bg-music');
-            const newAudio = document.getElementById('bg-music-romantic');
+            const oldAudio = UI.audioHappy;
+            const newAudio = UI.audioRomantic;
 
             // Force load before playing
             newAudio.load();
@@ -1145,16 +1573,20 @@
         function goToPage(pageJson) {
             initAudioCtx();
             haptic(15);
-            
+
             if (pageJson === 4) {
                 switchMusicToRomantic();
             }
 
-            document.querySelectorAll('.page').forEach(p => {
+            // Use Cached Pages List
+            UI.pages.forEach(p => {
                 p.classList.remove('active');
                 setTimeout(() => { if (!p.classList.contains('active')) p.style.display = 'none'; }, 1000);
             });
-            const target = document.getElementById(`page-${pageJson}`);
+            
+            // Note: Since pages are dynamic visibility, we still might need getElementById for specific logic if we didn't map them all individually,
+            // but for generic switching, we can optimize. Here I'll use direct ID for target to be safe and simple
+            const target = document.getElementById(`page-${pageJson}`); 
             target.style.display = 'flex';
             setTimeout(() => { target.classList.add('active'); }, 50);
             if (pageJson === 5) initPuzzle();
@@ -1162,7 +1594,7 @@
 
         function checkBirthday() {
             const dateInput = birthdateInput;
-            const err = document.getElementById('error-msg');
+            const err = UI.errorMsg; // Use Cached UI
             err.classList.add('hidden');
 
             if (dateInput.length !== 5 || !dateInput.includes('/')) {
@@ -1175,7 +1607,7 @@
             }
 
             const userMD = dateInput;
-            if (userMD === TARGET_BIRTHDAY_MD) { 
+            if (userMD === TARGET_BIRTHDAY_MD) {
                 playMusic();
                 goToPage(3);
             } else {
@@ -1198,29 +1630,28 @@
         function placeCandle(e) {
             if (currentCandles >= totalCandles) return;
             if (isBlowingMode) return;
-            
-            if (currentCandles === 0) {
-                document.body.classList.add('dim-background');
-            }
 
-            haptic(5);
+            // Use Cached UI where possible
+            const cakeElement = UI.newCake;
+            const icingElement = UI.cakeSurface;
+            const wishMsg = UI.wishMessage;
+            const instruction = UI.cakeInstruction;
 
-            const cakeElement = document.getElementById('new-cake');
-            const icingElement = document.getElementById('cake-surface');
-            const wishMsg = document.getElementById('wish-message');
-            const instruction = document.getElementById('cake-instruction');
-
-            const rect = icingElement.getBoundingClientRect();
             const clickX = e.clientX;
             const clickY = e.clientY;
 
+            // ใช้ elementFromPoint เพื่อตรวจสอบว่าคลิกโดนหน้าเค้กจริงๆ หรือไม่ (ไม่ใช่โดนเทียนเดิม)
             const clickedElement = document.elementFromPoint(clickX, clickY);
             if (clickedElement !== icingElement) {
                 return;
             }
 
-            const relativeX = clickX - rect.left;
-            const relativeY = clickY - rect.top;
+            // Haptic check: Only vibrate if valid click on cake
+            haptic(5);
+
+            // ใช้ offsetX/Y แทน getBoundingClientRect เพื่อความแม่นยำในระนาบ 3D/Scale
+            const x = e.offsetX;
+            const y = e.offsetY;
 
             const candle = document.createElement('div');
             candle.className = 'candle';
@@ -1234,15 +1665,35 @@
             candle.style.setProperty('--c2', randomPair[1]);
 
             const randomRot = Math.floor(Math.random() * 10) - 5;
-            const icingOffsetLeft = parseInt(window.getComputedStyle(icingElement).left) || 0;
-            const icingOffsetTop = parseInt(window.getComputedStyle(icingElement).top) || 0;
-
-            candle.style.left = `${relativeX + icingOffsetLeft - 8}px`;
-            candle.style.top = `${relativeY + icingOffsetTop - 45}px`;
+            
+            // Icing Offset (left: 5px, top: 2px) + Candle Logic
+            // Left: x + 5 (icing left) (Margin-left -8px ใน CSS จะจัดการเรื่อง Center เอง)
+            // Top: y + 2 (icing top) - 50 (candle height) เพื่อให้ฐานเทียนอยู่ที่จุดคลิก
+            
+            candle.style.left = `${x + 5}px`;
+            candle.style.top = `${y + 2 - 50}px`;
             candle.style.transform = `translateZ(75px) rotateX(-20deg) rotateZ(${randomRot}deg)`;
 
             const flame = document.createElement('div');
             flame.className = 'flame';
+
+            for (let i = 0; i < 15; i++) {
+                const spark = document.createElement('div');
+                spark.className = 'spark';
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 25 + Math.random() * 30;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+
+                spark.style.setProperty('--tx', `${tx}px`);
+                spark.style.setProperty('--ty', `${ty}px`);
+
+                const duration = 0.4 + Math.random() * 0.4;
+                const delay = Math.random() * 0.5;
+
+                spark.style.animation = `fly-spark ${duration}s linear ${delay}s infinite`;
+                flame.appendChild(spark);
+            }
 
             flame.onclick = (event) => {
                 event.stopPropagation();
@@ -1253,23 +1704,24 @@
             cakeElement.appendChild(candle);
             currentCandles++;
 
+            // FIX: Dim AFTER the 1st candle is placed
+            if (currentCandles === 1) {
+                document.body.classList.add('dim-background');
+            }
+
             if (currentCandles === totalCandles) {
                 wishMsg.style.opacity = '1';
+                wishMsg.classList.remove('pointer-events-none'); // FIX: Re-enable pointer events
                 instruction.style.opacity = '0';
             }
         }
 
         function finishWishing() {
-            const wishText = document.getElementById('wish-text');
-            const confirmBtn = document.getElementById('confirm-wish-btn');
-            const blowInstruction = document.getElementById('blow-instruction');
-            const blowBtn = document.getElementById('blow-btn');
-
-            wishText.textContent = "🎂 ถึงเวลาเป่าเค้กแล้ว! 🎂";
-            confirmBtn.style.display = 'none';
-            blowInstruction.classList.remove('hidden');
-
-            blowBtn.classList.remove('hidden');
+            // Use Cached UI
+            UI.wishText.textContent = "🎂 ถึงเวลาเป่าเค้กแล้ว! 🎂";
+            UI.confirmWishBtn.style.display = 'none';
+            UI.blowInstruction.classList.remove('hidden');
+            UI.blowBtn.classList.remove('hidden');
 
             isBlowingMode = true;
         }
@@ -1277,11 +1729,11 @@
         function triggerCartoonBlow() {
             if (candlesExtinguished >= totalCandles) return;
 
-            // --- Hide button and instruction immediately ---
-            document.getElementById('blow-btn').style.display = 'none';
-            document.getElementById('blow-instruction').style.display = 'none';
+            // Use Cached UI
+            UI.blowBtn.style.display = 'none';
+            UI.blowInstruction.style.display = 'none';
 
-            const character = document.getElementById('cartoon-blower');
+            const character = UI.cartoonBlower;
             const svgContainer = character.querySelector('svg');
 
             character.classList.add('active');
@@ -1299,9 +1751,6 @@
                 setTimeout(() => {
                     character.classList.remove('active');
                     svgContainer.classList.remove('blowing');
-                    // Button already hidden, no need to hide here
-                    
-                    // Show next button ONLY after bear is gone
                     showNextButton();
                 }, 2000);
 
@@ -1332,41 +1781,36 @@
                 candleElement.appendChild(smoke);
                 candlesExtinguished++;
                 if (candlesExtinguished >= totalCandles) {
+                    UI.blowBtn.style.display = 'none';
                     allCandlesExtinguished();
                 }
             }
         }
 
         function showNextButton() {
-            const nextBtn = document.getElementById('next-to-gallery-btn');
+            const nextBtn = UI.nextToGalleryBtn; // Use Cached UI
             nextBtn.classList.remove('hidden');
             setTimeout(() => {
-                 nextBtn.classList.remove('opacity-0', 'pointer-events-none');
-            }, 50);
+                nextBtn.classList.remove('opacity-0', 'pointer-events-none');
+                createConfetti();
+                UI.wishText.textContent = "🎉 เย้! สุขสันต์วันเกิดนะ 🎉";
+            }, 250);
         }
 
         function allCandlesExtinguished() {
-            const wishText = document.getElementById('wish-text');
-            const blowInstruction = document.getElementById('blow-instruction');
-            
             document.body.classList.remove('dim-background');
+            UI.blowInstruction.style.display = 'none';
 
-            wishText.textContent = "🎉 เย้! สุขสันต์วันเกิดนะ 🎉";
-            blowInstruction.style.display = 'none';
-
-            createConfetti();
             haptic([50, 50, 50]);
 
-            // Only show button if bear is NOT active (manual mode)
-            // If bear IS active, triggerCartoonBlow will handle showing the button later
-            const bear = document.getElementById('cartoon-blower');
+            const bear = UI.cartoonBlower;
             if (!bear.classList.contains('active')) {
                 showNextButton();
             }
         }
 
         function initPuzzle() {
-            const board = document.getElementById('puzzle-board');
+            const board = UI.puzzleBoard; // Use Cached UI
             board.innerHTML = '';
             board.style.gap = '2px';
             board.style.pointerEvents = 'auto';
@@ -1518,7 +1962,7 @@
 
         function checkPuzzle() {
             const pieces = document.querySelectorAll('.puzzle-piece');
-            const board = document.getElementById('puzzle-board');
+            const board = UI.puzzleBoard; // Use Cached UI
             let isSolved = true;
 
             pieces.forEach((piece, index) => {
@@ -1527,8 +1971,8 @@
                 }
             });
 
-            const successMsg = document.getElementById('puzzle-success');
-            const nextBtn = document.getElementById('next-to-card-btn');
+            const successMsg = UI.puzzleSuccess; // Use Cached UI
+            const nextBtn = UI.nextToCardBtn; // Use Cached UI
 
             if (isSolved) {
                 successMsg.classList.remove('hidden');
@@ -1566,8 +2010,8 @@
         }
 
         function openEnvelope() {
-            const envelope = document.getElementById('envelope');
-            const tapText = document.getElementById('tapEnvelope');
+            const envelope = UI.envelope; // Use Cached UI
+            const tapText = UI.tapEnvelope; // Use Cached UI
             if (!envelope.classList.contains('open')) {
                 haptic([10, 20]);
                 envelope.classList.add('open');
